@@ -46,7 +46,6 @@ model Trip {
   includes       TripInclude[]
   excludes       TripExclude[]
   bookings       Booking[]
-  testimonials   Testimonial[]
 
   @@map("trips")
 }
@@ -164,17 +163,9 @@ model Booking {
 }
 
 model Testimonial {
-  id         String   @id @default(uuid())
-  name       String
-  avatar     String?
-  location   String
-  rating     Int
-  comment    String
-  tripTitle  String   @map("trip_title")
-  tripId     String?  @map("trip_id")
-  isApproved Boolean  @default(false) @map("is_approved")
-  createdAt  DateTime @default(now()) @map("created_at")
-  trip       Trip?    @relation(fields: [tripId], references: [id], onDelete: SetNull)
+  id        String   @id @default(uuid())
+  videoUrl  String   @map("video_url")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@map("testimonials")
 }

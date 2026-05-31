@@ -58,12 +58,7 @@ export interface Car {
 
 export interface Testimonial {
   id: string
-  name: string
-  avatar: string
-  location: string
-  rating: number
-  comment: string
-  tripTitle: string
+  videoUrl: string
 }
 
 export interface PrivateTripRequest {

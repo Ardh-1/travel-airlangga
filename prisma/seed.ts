@@ -350,37 +350,19 @@ async function main() {
     }
   }
 
-  // 4. Seed Testimonials
+  // 4. Seed Testimonials (Video Gallery)
   const testimonialsData = [
     {
       id: '1',
-      name: 'Sarah Wijaya',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80',
-      location: 'Jakarta',
-      rating: 5,
-      comment: 'Pengalaman trip ke East Europe bersama Airlangga Travel luar biasa! Guide yang ramah, itinerary yang well-planned, dan semua berjalan lancar. Pasti akan repeat order!',
-      tripTitle: 'East Europe Adventure',
-      tripId: '1',
+      videoUrl: 'https://www.youtube.com/embed/82Z07bXlR30',
     },
     {
       id: '2',
-      name: 'Budi Santoso',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80',
-      location: 'Surabaya',
-      rating: 5,
-      comment: 'Trip Bromo-Yogya sangat memorable! Sunrise di Bromo indah banget, guide nya juga sangat informatif. Worth every penny!',
-      tripTitle: 'Bromo Sunrise & Yogyakarta Heritage',
-      tripId: '2',
+      videoUrl: 'https://www.youtube.com/embed/zpj9V0ZJv_s',
     },
     {
       id: '3',
-      name: 'Linda Permata',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80',
-      location: 'Bandung',
-      rating: 5,
-      comment: 'Sudah 3x ikut open trip sama Airlangga Travel dan selalu puas. Pelayanan prima, harga bersaing, dan yang paling penting aman dan nyaman.',
-      tripTitle: 'Dieng Plateau & Yogyakarta Culture',
-      tripId: '3',
+      videoUrl: 'https://www.youtube.com/embed/1vR_sO0Fv-o',
     },
   ]
 
@@ -393,19 +375,13 @@ async function main() {
       await prisma.testimonial.create({
         data: {
           id: t.id,
-          name: t.name,
-          avatar: t.avatar,
-          location: t.location,
-          rating: t.rating,
-          comment: t.comment,
-          tripTitle: t.tripTitle,
-          tripId: t.tripId,
-          isApproved: true,
-        },
+          videoUrl: t.videoUrl,
+        } as any,
       })
-      console.log(`Testimonial seeded: ${t.name}`)
+      console.log(`Testimonial video seeded: ${t.id}`)
     }
   }
+
 
   console.log('Seeding completed!')
 }

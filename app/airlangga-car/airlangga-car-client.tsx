@@ -137,7 +137,7 @@ Mohon konfirmasi ketersediaan. Terima kasih!`
               Rental Kendaraan Premium
             </h1>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              Nikmati perjalanan dengan armada kendaraan terbaik kami. Tersedia berbagai pilihan 
+              Nikmati perjalanan dengan armada kendaraan terbaik kami. Tersedia berbagai pilihan
               mobil dan van premium dengan driver profesional.
             </p>
           </motion.div>
@@ -161,7 +161,7 @@ Mohon konfirmasi ketersediaan. Terima kasih!`
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {cars.map((car, index) => (
               <motion.div
                 key={car.id}
@@ -169,68 +169,77 @@ Mohon konfirmasi ketersediaan. Terima kasih!`
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-xl transition-all duration-300"
+                className="group bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col h-full"
               >
                 {/* Image */}
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative aspect-[3/4] flex-shrink-0 overflow-hidden">
                   <Image
                     src={car.image}
                     alt={car.name}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground border-0">
-                    {car.type}
-                  </Badge>
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
+                  
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <Badge className="bg-primary text-primary-foreground border-0">
+                      {car.type}
+                    </Badge>
+                  </div>
+
+                  {/* Capacity Overlay */}
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2 text-background">
+                    <Users className="w-4 h-4" />
+                    <span className="text-sm font-medium">{car.capacity} Penumpang</span>
+                  </div>
                 </div>
 
                 {/* Content */}
-                <div className="p-5 space-y-4">
+                <div className="p-5 flex flex-col flex-grow justify-between">
                   <div>
-                    <h3 className="font-serif font-semibold text-lg text-card-foreground">
+                    <h3 className="font-serif font-semibold text-lg text-card-foreground line-clamp-2 leading-snug">
                       {car.name}
                     </h3>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                      <Users className="w-4 h-4 text-primary" />
-                      <span>{car.capacity} orang</span>
-                    </div>
                   </div>
 
-                  {/* Features */}
-                  <div className="flex flex-wrap gap-2">
-                    {car.features.slice(0, 3).map((feature) => {
-                      const Icon = featureIcons[feature] || Check
-                      return (
-                        <span
-                          key={feature}
-                          className="inline-flex items-center gap-1 px-2 py-1 bg-secondary rounded-full text-xs text-muted-foreground"
-                        >
-                          <Icon className="w-3 h-3" />
-                          {feature}
+                  <div className="mt-6 space-y-4">
+                    {/* Features */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {car.features.slice(0, 3).map((feature) => {
+                        const Icon = featureIcons[feature] || Check
+                        return (
+                          <span
+                            key={feature}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-secondary rounded-full text-[11px] font-medium text-muted-foreground border border-border/50"
+                          >
+                            <Icon className="w-3 h-3 text-primary" />
+                            {feature}
+                          </span>
+                        )
+                      })}
+                      {car.features.length > 3 && (
+                        <span className="px-2.5 py-1 bg-secondary rounded-full text-[11px] font-medium text-muted-foreground border border-border/50">
+                          +{car.features.length - 3}
                         </span>
-                      )
-                    })}
-                    {car.features.length > 3 && (
-                      <span className="px-2 py-1 bg-secondary rounded-full text-xs text-muted-foreground">
-                        +{car.features.length - 3}
+                      )}
+                    </div>
+
+                    {/* Price */}
+                    <div className="flex items-end gap-2">
+                      <span className="font-mono text-2xl font-bold text-primary">
+                        {formatPrice(car.pricePerDay)}
                       </span>
-                    )}
-                  </div>
+                      <span className="text-sm text-muted-foreground">/hari</span>
+                    </div>
 
-                  {/* Price */}
-                  <div className="flex items-end gap-1">
-                    <span className="font-mono text-2xl font-bold text-primary">
-                      {formatPrice(car.pricePerDay)}
-                    </span>
-                    <span className="text-sm text-muted-foreground mb-1">/hari</span>
+                    <Button
+                      onClick={() => handleBookClick(car)}
+                      className="w-full bg-primary hover:bg-primary-dark text-primary-foreground rounded-full cursor-pointer"
+                    >
+                      Booking Sekarang
+                    </Button>
                   </div>
-
-                  <Button
-                    onClick={() => handleBookClick(car)}
-                    className="w-full bg-primary hover:bg-primary-dark text-primary-foreground rounded-full"
-                  >
-                    Booking Sekarang
-                  </Button>
                 </div>
               </motion.div>
             ))}

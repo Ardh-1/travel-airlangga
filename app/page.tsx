@@ -5,6 +5,7 @@ import { HeroSection } from '@/components/sections/hero'
 import { StatsSection } from '@/components/sections/stats'
 import { FeaturedTripsSection } from '@/components/sections/featured-trips'
 import { FeaturesSection } from '@/components/sections/features'
+import { OurServicesSection } from '@/components/sections/our-services'
 import { TestimonialsSection } from '@/components/sections/testimonials'
 import { GallerySection } from '@/components/sections/gallery'
 import { CTABannerSection } from '@/components/sections/cta-banner'
@@ -27,6 +28,7 @@ export default async function HomePage() {
       <StatsSection />
       <FeaturedTripsSection initialTrips={trips} />
       <FeaturesSection />
+      <OurServicesSection />
       <TestimonialsSection initialTestimonials={testimonials} />
       <GallerySection initialItems={galleryItems} />
       <CTABannerSection />

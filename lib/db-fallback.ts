@@ -148,7 +148,6 @@ export async function getTestimonials(): Promise<Testimonial[]> {
   }
   try {
     const dbTestimonials = await prisma.testimonial.findMany({
-      where: { isApproved: true },
       orderBy: { createdAt: 'desc' },
     })
 
@@ -156,12 +155,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
 
     return dbTestimonials.map((t) => ({
       id: t.id,
-      name: t.name,
-      avatar: t.avatar ?? '',
-      location: t.location,
-      rating: t.rating,
-      comment: t.comment,
-      tripTitle: t.tripTitle,
+      videoUrl: (t as any).videoUrl || '',
     }))
   } catch (error) {
     console.warn('Prisma getTestimonials failed, falling back to static data:', error)

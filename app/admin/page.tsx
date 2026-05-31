@@ -20,7 +20,7 @@ interface DashboardStats {
   totalRevenue: number
   totalBookings: number
   activeTrips: number
-  pendingTestimonials: number
+  totalTestimonials: number
   isMockData: boolean
   dpBookingsCount: number
   paidBookingsCount: number
@@ -38,7 +38,7 @@ async function getDashboardData(): Promise<{
         totalRevenue: 25000000,
         totalBookings: 2,
         activeTrips: 5,
-        pendingTestimonials: 2,
+        totalTestimonials: 2,
         isMockData: true,
         dpBookingsCount: 1,
         paidBookingsCount: 1,
@@ -74,7 +74,7 @@ async function getDashboardData(): Promise<{
   }
 
   try {
-    const [bookings, tripsCount, pendingTestimonialsCount, carsCount] = await Promise.all([
+    const [bookings, tripsCount, totalTestimonialsCount, carsCount] = await Promise.all([
       prisma.booking.findMany({
         where: {
           status: {
@@ -84,9 +84,7 @@ async function getDashboardData(): Promise<{
         orderBy: { createdAt: 'desc' },
       }),
       prisma.trip.count(),
-      prisma.testimonial.count({
-        where: { isApproved: false },
-      }),
+      prisma.testimonial.count(),
       prisma.car.count(),
     ])
 
@@ -112,7 +110,7 @@ async function getDashboardData(): Promise<{
         totalRevenue,
         totalBookings: bookings.length,
         activeTrips: tripsCount,
-        pendingTestimonials: pendingTestimonialsCount,
+        totalTestimonials: totalTestimonialsCount,
         isMockData: false,
         dpBookingsCount: dpBookings.length,
         paidBookingsCount: paidBookings.length,
@@ -127,7 +125,7 @@ async function getDashboardData(): Promise<{
         totalRevenue: 26600000,
         totalBookings: 2,
         activeTrips: 5,
-        pendingTestimonials: 2,
+        totalTestimonials: 2,
         isMockData: true,
         dpBookingsCount: 1,
         paidBookingsCount: 1,
@@ -279,18 +277,12 @@ export default async function AdminDashboardPage() {
         <div className="bg-card border border-border p-5 rounded-2xl flex items-center justify-between shadow-sm">
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-              Moderasi Ulasan
+              Video Dokumentasi
             </p>
             <h3 className="font-mono text-2xl font-bold text-foreground">
-              {stats.pendingTestimonials}
+              {stats.totalTestimonials}
             </h3>
-            {stats.pendingTestimonials > 0 ? (
-              <span className="inline-flex items-center gap-1 text-[10px] text-destructive bg-destructive/10 px-2 py-0.5 rounded-full font-medium">
-                Perlu Review
-              </span>
-            ) : (
-              <span className="text-[10px] text-muted-foreground">Semua bersih</span>
-            )}
+            <span className="text-[10px] text-muted-foreground">Aktif di halaman utama</span>
           </div>
           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
             <MessageSquare className="w-6 h-6" />
