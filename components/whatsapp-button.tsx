@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { MessageCircle } from 'lucide-react'
 
-const WHATSAPP_NUMBER = '6208111211143'
+const WHATSAPP_NUMBER = '6282122258373'
 const DEFAULT_MESSAGE = 'Halo Airlangga Travel, saya ingin bertanya tentang trip'
 
 interface WhatsAppButtonProps {
@@ -35,7 +35,7 @@ export function WhatsAppButton({ message = DEFAULT_MESSAGE }: WhatsAppButtonProp
       aria-label="Chat on WhatsApp"
     >
       <MessageCircle className="w-6 h-6 text-primary-foreground" />
-      
+
       {/* Pulse animation */}
       <span className="absolute inset-0 rounded-full bg-primary animate-ping opacity-25" />
     </motion.a>

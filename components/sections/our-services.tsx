@@ -17,7 +17,7 @@ const services = [
     title: 'Private Trip',
     description: 'Rancang liburan impian Anda secara eksklusif. Bebas tentukan tanggal, rute, dan fasilitas sesuai keinginan.',
     image: '/images/services-2.png',
-    link: '/contact',
+    link: '/private-trip',
     cta: 'Konsultasi Privat',
   },
   {

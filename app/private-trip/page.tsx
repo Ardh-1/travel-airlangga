@@ -1,24 +1,19 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import Image from 'next/image'
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { toast } from 'sonner'
 import {
   Users,
   Calendar,
   MapPin,
-  Check,
   MessageCircle,
-  Car,
-  Hotel,
   User,
-  Utensils,
-  Ticket,
-  Camera,
+  Briefcase,
+  DollarSign,
+  ClipboardList,
 } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
@@ -26,395 +21,346 @@ import { WhatsAppButton } from '@/components/whatsapp-button'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { destinations, privateTripFacilities } from '@/lib/data'
+import { Textarea } from '@/components/ui/textarea'
 
-const WHATSAPP_NUMBER = '6208111211143'
+const WHATSAPP_NUMBER = '6282122258373'
 
 const privateTripSchema = z.object({
-  destination: z.string().min(1, 'Pilih destinasi'),
-  participants: z.number().min(1, 'Minimal 1 peserta').max(50, 'Maksimal 50 peserta'),
-  duration: z.number().min(1, 'Minimal 1 hari').max(30, 'Maksimal 30 hari'),
-  facilities: z.array(z.string()),
+  name: z.string().min(1, 'Nama lengkap wajib diisi'),
+  instansi: z.string().optional(),
+  whatsapp: z.string().min(5, 'Nomor WhatsApp tidak valid'),
+  destination: z.string().min(1, 'Destinasi trip wajib diisi'),
+  budget: z.string().min(1, 'Estimasi budget wajib diisi'),
+  participants: z.number().min(1, 'Minimal 1 peserta'),
+  departureDate: z.string().min(1, 'Tanggal berangkat wajib diisi'),
+  returnDate: z.string().min(1, 'Tanggal pulang wajib diisi'),
+  additionalNeeds: z.string().optional(),
 })
 
 type PrivateTripFormData = z.infer<typeof privateTripSchema>
 
-const facilityIcons: Record<string, typeof Car> = {
-  transport: Car,
-  hotel: Hotel,
-  guide: User,
-  meals: Utensils,
-  tickets: Ticket,
-  documentation: Camera,
-}
-
 export default function PrivateTripPage() {
-  const [selectedDestination, setSelectedDestination] = useState<string | null>(null)
-
   const {
     register,
+    handleSubmit,
     watch,
-    setValue,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<PrivateTripFormData>({
     resolver: zodResolver(privateTripSchema),
+    mode: 'onChange',
     defaultValues: {
+      name: '',
+      instansi: '',
+      whatsapp: '',
       destination: '',
+      budget: '',
       participants: 2,
-      duration: 3,
-      facilities: ['transport', 'hotel', 'guide'],
+      departureDate: '',
+      returnDate: '',
+      additionalNeeds: '',
     },
   })
 
-  const formData = watch()
-  const participants = formData.participants || 2
-  const duration = formData.duration || 3
-  const selectedFacilities = formData.facilities || []
+  // Watch fields for live summary preview
+  const watchedFields = watch()
 
-  const estimatedPrice = useMemo(() => {
-    const basePrice = 500000 * duration // Base price per day
-    const facilitiesPrice = selectedFacilities.reduce((total, facilityId) => {
-      const facility = privateTripFacilities.find((f) => f.id === facilityId)
-      return total + (facility?.price || 0) * duration
-    }, 0)
-    return (basePrice + facilitiesPrice) * participants
-  }, [participants, duration, selectedFacilities])
+  const handleWhatsAppClick = (data: PrivateTripFormData) => {
+    const message = `Halo Airlangga Travel, saya ingin berkonsultasi mengenai kustomisasi Private Trip dengan detail berikut:
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-    }).format(price)
-  }
+*Data Pemesan:*
+- Nama Lengkap: ${data.name}
+- Asal Instansi/Keluarga: ${data.instansi || '-'}
+- Nomor WhatsApp: ${data.whatsapp}
 
-  const handleFacilityToggle = (facilityId: string) => {
-    const current = selectedFacilities
-    if (current.includes(facilityId)) {
-      setValue(
-        'facilities',
-        current.filter((f) => f !== facilityId)
-      )
-    } else {
-      setValue('facilities', [...current, facilityId])
-    }
-  }
+*Detail Trip:*
+- Destinasi Trip: ${data.destination}
+- Estimasi Budget: ${data.budget}
+- Jumlah Peserta: ${data.participants} orang
+- Tanggal Berangkat: ${data.departureDate}
+- Tanggal Pulang: ${data.returnDate}
 
-  const handleWhatsAppClick = () => {
-    if (!selectedDestination) {
-      toast.error('Pilih destinasi terlebih dahulu')
-      return
-    }
+*Kebutuhan Tambahan:*
+${data.additionalNeeds || '-'}
 
-    const facilitiesList = selectedFacilities
-      .map((id) => privateTripFacilities.find((f) => f.id === id)?.label)
-      .filter(Boolean)
-      .join(', ')
-
-    const message = `Halo Airlangga Travel, saya ingin booking Private Trip dengan detail:
-
-Destinasi: ${selectedDestination}
-Jumlah Peserta: ${participants} orang
-Durasi: ${duration} hari
-Fasilitas: ${facilitiesList}
-Estimasi Harga: ${formatPrice(estimatedPrice)}
-
-Mohon informasi lebih lanjut. Terima kasih!`
+Mohon informasi penawaran dan tindak lanjutnya. Terima kasih!`
 
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <Navbar />
+    <main className="min-h-screen bg-background flex flex-col justify-between">
+      <div>
+        <Navbar />
 
-      {/* Hero */}
-      <section className="relative pt-32 pb-20 bg-secondary overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent rounded-full blur-3xl" />
-        </div>
-
-        <div className="container mx-auto px-4 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center max-w-3xl mx-auto"
-          >
-            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-              Private Trip
-            </span>
-            <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground mb-4 text-balance">
-              Custom Your Journey
-            </h1>
-            <p className="text-muted-foreground text-lg leading-relaxed">
-              Rancang perjalanan impian Anda sendiri. Pilih destinasi, tentukan durasi, 
-              dan fasilitas sesuai keinginan. Tim kami siap mewujudkan liburan private yang sempurna!
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Destination Selector */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-10"
-          >
-            <h2 className="font-serif font-bold text-2xl md:text-3xl text-foreground mb-2">
-              Pilih Destinasi
-            </h2>
-            <p className="text-muted-foreground">
-              Klik destinasi yang ingin Anda kunjungi
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {destinations.map((dest, index) => (
-              <motion.button
-                key={dest.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.05 }}
-                viewport={{ once: true }}
-                onClick={() => {
-                  setSelectedDestination(dest.name)
-                  setValue('destination', dest.name)
-                }}
-                className={`group relative aspect-square rounded-2xl overflow-hidden border-2 transition-all ${
-                  selectedDestination === dest.name
-                    ? 'border-primary ring-4 ring-primary/20'
-                    : 'border-transparent hover:border-primary/50'
-                }`}
-              >
-                <Image
-                  src={dest.image}
-                  alt={dest.name}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 text-left">
-                  <span className="text-background font-semibold text-sm">{dest.name}</span>
-                </div>
-                {selectedDestination === dest.name && (
-                  <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                    <Check className="w-4 h-4 text-primary-foreground" />
-                  </div>
-                )}
-              </motion.button>
-            ))}
+        {/* Hero Section */}
+        <section className="relative pt-32 pb-16 bg-secondary/30 overflow-hidden">
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent rounded-full blur-3xl animate-pulse" />
           </div>
-          {errors.destination && (
-            <p className="text-sm text-destructive text-center mt-4">
-              {errors.destination.message}
-            </p>
-          )}
-        </div>
-      </section>
 
-      {/* Configuration Form */}
-      <section className="py-16 bg-secondary">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Left - Form */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="space-y-8"
-              >
-                {/* Participants & Duration */}
-                <div className="bg-card rounded-2xl border border-border p-6 space-y-6">
-                  <h3 className="font-serif font-semibold text-lg text-card-foreground">
-                    Detail Trip
-                  </h3>
+          <div className="container mx-auto px-4 relative">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center max-w-3xl mx-auto space-y-3"
+            >
+              <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider">
+                Private Trip
+              </span>
+              <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground text-balance">
+                Rancang Liburan Impian Anda
+              </h1>
+              <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+                Silakan isi data diri dan rencana perjalanan kustom Anda di bawah ini. Tim konsultan travel kami akan segera memformulasikan penawaran terbaik untuk Anda.
+              </p>
+            </motion.div>
+          </div>
+        </section>
 
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="participants">Jumlah Peserta</Label>
+        {/* Form & Summary Area */}
+        <section className="py-16">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <form onSubmit={handleSubmit(handleWhatsAppClick)} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column: Form Sections */}
+              <div className="lg:col-span-2 space-y-6">
+
+                {/* 1. Data Pemesan */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-card rounded-3xl border border-border/80 p-6 md:p-8 space-y-6 shadow-sm"
+                >
+                  <div className="flex items-center gap-3 border-b border-border/60 pb-3">
+                    <User className="w-5 h-5 text-primary" />
+                    <h2 className="font-serif font-bold text-xl text-foreground">Data Diri Pemesan</h2>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="name">Nama Lengkap *</Label>
+                      <Input
+                        id="name"
+                        placeholder="Contoh: Budi Santoso"
+                        className="rounded-xl h-11"
+                        {...register('name')}
+                      />
+                      {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="whatsapp">Nomor WhatsApp Aktif *</Label>
+                      <Input
+                        id="whatsapp"
+                        placeholder="Contoh: 081234567890"
+                        className="rounded-xl h-11"
+                        {...register('whatsapp')}
+                      />
+                      {errors.whatsapp && <p className="text-xs text-destructive">{errors.whatsapp.message}</p>}
+                    </div>
+
+                    <div className="space-y-1.5 md:col-span-2">
+                      <Label htmlFor="instansi">Asal Instansi / Nama Rombongan Keluarga (Opsional)</Label>
                       <div className="relative">
-                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                        <Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="instansi"
+                          placeholder="Contoh: PT Angin Ribut / Rombongan Keluarga Budi"
+                          className="pl-10 rounded-xl h-11"
+                          {...register('instansi')}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* 2. Detail Rencana Perjalanan */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.05 }}
+                  className="bg-card rounded-3xl border border-border/80 p-6 md:p-8 space-y-6 shadow-sm"
+                >
+                  <div className="flex items-center gap-3 border-b border-border/60 pb-3">
+                    <MapPin className="w-5 h-5 text-primary" />
+                    <h2 className="font-serif font-bold text-xl text-foreground">Detail Rencana Trip</h2>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5 md:col-span-2">
+                      <Label htmlFor="destination">Destinasi Wisata Impian *</Label>
+                      <Input
+                        id="destination"
+                        placeholder="Contoh: Bali 3D2N / Labuan Bajo Premium"
+                        className="rounded-xl h-11"
+                        {...register('destination')}
+                      />
+                      {errors.destination && <p className="text-xs text-destructive">{errors.destination.message}</p>}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="budget">Estimasi Budget per Rombongan *</Label>
+                      <div className="relative">
+                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="budget"
+                          placeholder="Contoh: Rp 15.000.000"
+                          className="pl-9 rounded-xl h-11"
+                          {...register('budget')}
+                        />
+                      </div>
+                      {errors.budget && <p className="text-xs text-destructive">{errors.budget.message}</p>}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="participants">Jumlah Peserta *</Label>
+                      <div className="relative">
+                        <Users className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
                           id="participants"
                           type="number"
                           min={1}
-                          max={50}
+                          className="pl-10 rounded-xl h-11"
                           {...register('participants', { valueAsNumber: true })}
-                          className="pl-10 h-12 rounded-xl"
                         />
                       </div>
-                      {errors.participants && (
-                        <p className="text-sm text-destructive">{errors.participants.message}</p>
-                      )}
+                      {errors.participants && <p className="text-xs text-destructive">{errors.participants.message}</p>}
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="duration">Durasi (Hari)</Label>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="departureDate">Tanggal Berangkat *</Label>
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                        <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
-                          id="duration"
-                          type="number"
-                          min={1}
-                          max={30}
-                          {...register('duration', { valueAsNumber: true })}
-                          className="pl-10 h-12 rounded-xl"
+                          id="departureDate"
+                          type="date"
+                          className="pl-10 rounded-xl h-11"
+                          {...register('departureDate')}
                         />
                       </div>
-                      {errors.duration && (
-                        <p className="text-sm text-destructive">{errors.duration.message}</p>
+                      {errors.departureDate && <p className="text-xs text-destructive">{errors.departureDate.message}</p>}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="returnDate">Tanggal Pulang *</Label>
+                      <div className="relative">
+                        <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="returnDate"
+                          type="date"
+                          className="pl-10 rounded-xl h-11"
+                          {...register('returnDate')}
+                        />
+                      </div>
+                      {errors.returnDate && <p className="text-xs text-destructive">{errors.returnDate.message}</p>}
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* 3. Kebutuhan Tambahan */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 }}
+                  className="bg-card rounded-3xl border border-border/80 p-6 md:p-8 space-y-6 shadow-sm"
+                >
+                  <div className="flex items-center gap-3 border-b border-border/60 pb-3">
+                    <ClipboardList className="w-5 h-5 text-primary" />
+                    <h2 className="font-serif font-bold text-xl text-foreground">Kebutuhan Tambahan</h2>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label htmlFor="additionalNeeds">Tulis kebutuhan spesifik Anda (Opsional)</Label>
+                    <Textarea
+                      id="additionalNeeds"
+                      placeholder="Contoh: Request hotel bintang 4, makan halal, include tiket penerbangan dari Surabaya, dokumentasi drone, dll."
+                      className="rounded-2xl min-h-[120px] resize-none"
+                      {...register('additionalNeeds')}
+                    />
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Right Column: Sticky Summary */}
+              <div className="lg:col-span-1">
+                <div className="sticky top-24 space-y-6">
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="bg-card border border-border/85 rounded-3xl p-6 shadow-sm space-y-6"
+                  >
+                    <h3 className="font-serif font-bold text-lg text-foreground border-b border-border pb-3">
+                      Ringkasan Pengajuan
+                    </h3>
+
+                    <div className="space-y-4 text-sm">
+                      <div>
+                        <span className="text-xs text-muted-foreground block">Destinasi Wisata</span>
+                        <span className="font-medium text-foreground">{watchedFields.destination || '-'}</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <span className="text-xs text-muted-foreground block">Jumlah Peserta</span>
+                          <span className="font-medium text-foreground">{watchedFields.participants || '0'} orang</span>
+                        </div>
+                        <div>
+                          <span className="text-xs text-muted-foreground block">Estimasi Budget</span>
+                          <span className="font-medium text-foreground">{watchedFields.budget || '-'}</span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <span className="text-xs text-muted-foreground block">Tgl Berangkat</span>
+                          <span className="font-medium text-foreground">{watchedFields.departureDate || '-'}</span>
+                        </div>
+                        <div>
+                          <span className="text-xs text-muted-foreground block">Tgl Pulang</span>
+                          <span className="font-medium text-foreground">{watchedFields.returnDate || '-'}</span>
+                        </div>
+                      </div>
+
+                      {watchedFields.name && (
+                        <div className="pt-3 border-t border-border/50">
+                          <span className="text-xs text-muted-foreground block">Pemesan</span>
+                          <span className="font-medium text-foreground block">{watchedFields.name}</span>
+                          {watchedFields.instansi && (
+                            <span className="text-xs text-muted-foreground block italic">{watchedFields.instansi}</span>
+                          )}
+                        </div>
                       )}
                     </div>
-                  </div>
-                </div>
 
-                {/* Facilities */}
-                <div className="bg-card rounded-2xl border border-border p-6">
-                  <h3 className="font-serif font-semibold text-lg text-card-foreground mb-4">
-                    Fasilitas
-                  </h3>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    {privateTripFacilities.map((facility) => {
-                      const Icon = facilityIcons[facility.id] || Check
-                      const isSelected = selectedFacilities.includes(facility.id)
-
-                      return (
-                        <button
-                          key={facility.id}
-                          type="button"
-                          onClick={() => handleFacilityToggle(facility.id)}
-                          className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${
-                            isSelected
-                              ? 'border-primary bg-primary/10'
-                              : 'border-border hover:border-primary/50'
-                          }`}
-                        >
-                          <div
-                            className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                              isSelected ? 'bg-primary' : 'bg-muted'
-                            }`}
-                          >
-                            <Icon
-                              className={`w-5 h-5 ${
-                                isSelected ? 'text-primary-foreground' : 'text-muted-foreground'
-                              }`}
-                            />
-                          </div>
-                          <div className="text-left">
-                            <p className="font-medium text-sm text-card-foreground">
-                              {facility.label}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              +{formatPrice(facility.price)}/hari
-                            </p>
-                          </div>
-                          {isSelected && (
-                            <Check className="w-5 h-5 text-primary ml-auto" />
-                          )}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Right - Summary */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="lg:sticky lg:top-24 h-fit"
-              >
-                <div className="bg-card rounded-2xl border border-border p-6 space-y-6">
-                  <h3 className="font-serif font-semibold text-lg text-card-foreground">
-                    Ringkasan Trip
-                  </h3>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
-                      <MapPin className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Destinasi</p>
-                        <p className="font-medium text-card-foreground">
-                          {selectedDestination || 'Belum dipilih'}
+                    <div className="pt-2">
+                      <Button
+                        type="submit"
+                        disabled={!isValid}
+                        className="w-full h-12 bg-primary hover:bg-primary-dark text-primary-foreground rounded-full text-base font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-50"
+                      >
+                        <MessageCircle className="w-5 h-5" />
+                        Konsultasi via WhatsApp
+                      </Button>
+                      {!isValid && (
+                        <p className="text-[10px] text-muted-foreground text-center mt-2 italic">
+                          * Mohon lengkapi semua bidang bertanda bintang (*)
                         </p>
-                      </div>
+                      )}
                     </div>
-
-                    <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
-                      <Users className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Jumlah Peserta</p>
-                        <p className="font-medium text-card-foreground">
-                          {participants} orang
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 p-3 bg-secondary rounded-xl">
-                      <Calendar className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Durasi</p>
-                        <p className="font-medium text-card-foreground">{duration} hari</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Selected Facilities */}
-                  {selectedFacilities.length > 0 && (
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-2">Fasilitas Terpilih</p>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedFacilities.map((id) => {
-                          const facility = privateTripFacilities.find((f) => f.id === id)
-                          return (
-                            <span
-                              key={id}
-                              className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium"
-                            >
-                              {facility?.label}
-                            </span>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Estimated Price */}
-                  <div className="pt-4 border-t border-border">
-                    <p className="text-sm text-muted-foreground mb-1">Estimasi Harga</p>
-                    <p className="font-mono text-3xl font-bold text-primary">
-                      {formatPrice(estimatedPrice)}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      *Harga dapat berubah sesuai ketersediaan
-                    </p>
-                  </div>
-
-                  <Button
-                    onClick={handleWhatsAppClick}
-                    className="w-full h-12 bg-primary hover:bg-primary-dark text-primary-foreground rounded-full text-base"
-                  >
-                    <MessageCircle className="w-5 h-5 mr-2" />
-                    Konsultasi via WhatsApp
-                  </Button>
+                  </motion.div>
                 </div>
-              </motion.div>
-            </div>
+              </div>
+            </form>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <Footer />
-      <WhatsAppButton message="Halo, saya tertarik dengan Private Trip" />
+      <WhatsAppButton message="Halo, saya ingin berkonsultasi mengenai Private Trip kustom" />
     </main>
   )
 }
