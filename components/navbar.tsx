@@ -50,7 +50,7 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
-            src="/images/logo.png"
+            src="/images/logo.webp"
             alt="Airlangga Travel"
             width={160}
             height={40}

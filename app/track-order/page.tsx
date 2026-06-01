@@ -335,16 +335,6 @@ function TrackOrderContent() {
         Kembali ke Beranda
       </Button>
 
-      {/* Header Section */}
-      <div className="text-center mb-12">
-        <h1 className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4">
-          Lacak <span className="text-primary">Status Pesanan</span>
-        </h1>
-        <p className="text-muted-foreground max-w-lg mx-auto">
-          Masukkan kode booking Anda (misal: ALG-2026-XXX) untuk melacak status pembayaran dan detail reservasi Anda secara real-time.
-        </p>
-      </div>
-
       {/* Search Input Card */}
       <Card className="border border-border/50 shadow-lg rounded-2xl overflow-hidden mb-10 bg-card/60 backdrop-blur-md">
         <CardContent className="p-6 md:p-8">
@@ -626,8 +616,29 @@ export default function TrackOrderPage() {
   return (
     <main className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      {/* Spacer for Fixed Navbar */}
-      <div className="h-20" />
+
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-16 bg-secondary/30 overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent rounded-full blur-3xl animate-pulse" />
+        </div>
+
+        <div className="container mx-auto px-4 relative">
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider">
+              Lacak Pesanan
+            </span>
+            <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground text-balance">
+              Lacak Status Pesanan
+            </h1>
+            <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+              Masukkan kode booking Anda (misal: ALG-2026-XXX) untuk melacak status pembayaran dan detail reservasi Anda secara real-time.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <div className="flex-1 py-12">
         <Suspense fallback={
           <div className="max-w-4xl mx-auto px-4 py-8 text-center py-20">

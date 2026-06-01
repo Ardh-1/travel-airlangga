@@ -4,12 +4,12 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Instagram, 
-  Camera, 
-  MapPin, 
-  X, 
-  Maximize2, 
+import {
+  Instagram,
+  Camera,
+  MapPin,
+  X,
+  Maximize2,
   Sparkles,
   Users
 } from 'lucide-react'
@@ -26,28 +26,73 @@ import { Button } from '@/components/ui/button'
 // 1. Data Anggota Tim
 const teamMembers = [
   {
-    name: 'Airlangga',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+    name: 'Abdul Ghani Aprizal',
+    image: '/images/team-1.webp',
     instagram: '#'
   },
   {
     name: 'Budi Santoso',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
+    image: '/images/team-2.webp',
     instagram: '#'
   },
   {
     name: 'Rina Wijaya',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80',
+    image: '/images/team-3.webp',
     instagram: '#'
   },
   {
     name: 'Dika Pratama',
-    image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80',
+    image: '/images/team-4.webp',
     instagram: '#'
   },
   {
     name: 'Sarah Amelia',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=600&q=80',
+    image: '/images/team-5.webp',
+    instagram: '#'
+  },
+  {
+    name: 'Ahmad Fauzi',
+    image: '/images/team-6.webp',
+    instagram: '#'
+  },
+  {
+    name: 'Indah Permata',
+    image: '/images/team-7.webp',
+    instagram: '#'
+  },
+  {
+    name: 'Hendra Wijaya',
+    image: '/images/team-8.webp',
+    instagram: '#'
+  },
+  {
+    name: 'Yulia Citra',
+    image: '/images/team-9.webp',
+    instagram: '#'
+  },
+  {
+    name: 'Rizky Ramadhan',
+    image: '/images/team-10.webp',
+    instagram: '#'
+  },
+  {
+    name: 'Dewi Lestari',
+    image: '/images/team-11.webp',
+    instagram: '#'
+  },
+  {
+    name: 'Bagus Saputra',
+    image: '/images/team-12.webp',
+    instagram: '#'
+  },
+  {
+    name: 'Fitriani Ningsih',
+    image: '/images/team-13.webp',
+    instagram: '#'
+  },
+  {
+    name: 'Aditya Pratama',
+    image: '/images/team-14.webp',
     instagram: '#'
   }
 ]
@@ -137,7 +182,7 @@ export function AboutClient() {
 
   // Helper untuk merender logo foto klien secara identik
   const renderLogoItem = (logo: { name: string; image: string }, idx: number) => (
-    <div 
+    <div
       key={`${logo.name}-${idx}`}
       className="flex items-center gap-3 bg-card border border-border/40 px-4 py-2 rounded-2xl group hover:border-primary/30 transition-all duration-300 shadow-sm flex-shrink-0 cursor-pointer overflow-hidden"
     >
@@ -158,58 +203,42 @@ export function AboutClient() {
 
   return (
     <div className="flex flex-col bg-background text-foreground overflow-hidden">
-      
+
       {/* ================= HERO SECTION ================= */}
-      <section className="relative py-28 md:py-36 bg-gradient-to-b from-primary/10 via-background to-background">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-          <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+      <section className="relative pt-32 pb-16 bg-secondary/30 overflow-hidden">
+        <div className="absolute inset-0 opacity-5 pointer-events-none -z-10">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent rounded-full blur-3xl animate-pulse" />
         </div>
 
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-2"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
+        <div className="container mx-auto px-4 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center max-w-3xl mx-auto space-y-3"
+          >
+            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider">
               Eksplorasi Tanpa Batas
-            </motion.div>
-            
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="font-serif font-black text-4xl sm:text-5xl md:text-7xl leading-tight text-foreground"
-            >
-              Menghubungkan Anda <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">Dengan Keindahan Nusantara</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-            >
+            </span>
+            <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground text-balance">
+              Menghubungkan Anda dengan Keindahan Nusantara
+            </h1>
+            <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
               Airlangga Travel lahir dari kecintaan yang mendalam pada petualangan. Kami berkomitmen untuk menghadirkan pengalaman perjalanan premium yang berkesan bagi setiap penjelajah dunia.
-            </motion.p>
-          </div>
+            </p>
+          </motion.div>
         </div>
       </section>
 
       {/* ================= MEET OUR TEAM ================= */}
       <section className="py-24 bg-card/40 border-y border-border/50 relative">
         <div className="container mx-auto px-4">
-          
+
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider uppercase">
-              <Users className="w-3.5 h-3.5" />
+            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
               Meet Our Team
-            </div>
+            </span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground">
               Para Punggawa Petualangan
             </h2>
@@ -230,20 +259,20 @@ export function AboutClient() {
               <CarouselContent className="-ml-4 sm:-ml-6">
                 {teamMembers.map((member, index) => (
                   <CarouselItem key={member.name} className="pl-4 sm:pl-6 basis-full md:basis-1/2 lg:basis-1/4 flex justify-center">
-                    <div className="group bg-background border border-border/80 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full max-w-[374px] h-[520px]">
+                    <div className="group bg-background border border-border/80 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 aspect-[768/1215] h-[520px] w-auto max-w-full">
                       {/* Photo */}
-                      <div className="relative h-full w-full overflow-hidden bg-muted">
+                      <div className="relative h-full w-full overflow-hidden bg-transparent">
                         <Image
                           src={member.image}
                           alt={member.name}
                           fill
-                          sizes="(max-width: 768px) 100vw, 374px"
+                          sizes="(max-width: 768px) 100vw, 330px"
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-end p-6">
                           {/* Social Icon on Hover */}
-                          <Link 
-                            href={member.instagram} 
+                          <Link
+                            href={member.instagram}
                             className="bg-white/20 hover:bg-white/40 p-4 rounded-full text-white backdrop-blur-md transition-all hover:scale-110 shadow-lg border border-white/20"
                           >
                             <Instagram className="w-6 h-6" />
@@ -286,7 +315,7 @@ export function AboutClient() {
 
           {/* Row 1: Kiri ke Kanan */}
           <div className="overflow-hidden flex w-full">
-            <motion.div 
+            <motion.div
               className="flex gap-6 w-max"
               animate={{ x: ['-25%', '0%'] }}
               transition={{
@@ -301,7 +330,7 @@ export function AboutClient() {
 
           {/* Row 2: Kanan ke Kiri */}
           <div className="overflow-hidden flex w-full">
-            <motion.div 
+            <motion.div
               className="flex gap-6 w-max"
               animate={{ x: ['0%', '-25%'] }}
               transition={{
@@ -316,7 +345,7 @@ export function AboutClient() {
 
           {/* Row 3: Kiri ke Kanan */}
           <div className="overflow-hidden flex w-full">
-            <motion.div 
+            <motion.div
               className="flex gap-6 w-max"
               animate={{ x: ['-25%', '0%'] }}
               transition={{
@@ -334,13 +363,12 @@ export function AboutClient() {
       {/* ================= PHOTOGRAPHER GALLERY ================= */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          
+
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider uppercase">
-              <Camera className="w-3.5 h-3.5" />
+            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
               Fotografi Profesional
-            </div>
+            </span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground">
               Karya Lensa Fotografer
             </h2>

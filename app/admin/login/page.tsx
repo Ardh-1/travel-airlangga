@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
         <div className="text-center space-y-2">
           <div className="relative w-48 h-12 mx-auto mb-4">
             <Image
-              src="/images/logo.png"
+              src="/images/logo.webp"
               alt="Airlangga Travel"
               fill
               className="object-contain"

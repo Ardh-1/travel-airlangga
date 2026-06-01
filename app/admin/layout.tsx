@@ -46,7 +46,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
         <div className="h-20 flex items-center px-6 border-b border-sidebar-border">
           <Link href="/" className="relative w-40 h-10">
             <Image
-              src="/images/logo.png"
+              src="/images/logo.webp"
               alt="Airlangga Travel"
               fill
               className="object-contain"

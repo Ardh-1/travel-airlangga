@@ -25,25 +25,41 @@ function TiktokIcon({ className, ...props }: React.ComponentProps<'svg'>) {
 
 export default function ContactClient() {
   return (
-    <div className="py-12 bg-background">
-      {/* Decorative background blurs */}
-      <div className="absolute top-20 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
-      <div className="absolute bottom-20 left-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none" />
-
-      <div className="container mx-auto px-4">
-        {/* Title */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider block mb-2">
-            Hubungi Kami
-          </span>
-          <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground mb-4">
-            Mulai Perjalanan Anda
-          </h1>
-          <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-            Punya pertanyaan mengenai paket open trip, private trip kustom, rental armada mobil,
-            atau butuh konsultasi perjalanan? Tim kami siap melayani kebutuhan Anda.
-          </p>
+    <div className="bg-background">
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-16 bg-secondary/30 overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent rounded-full blur-3xl animate-pulse" />
         </div>
+
+        <div className="container mx-auto px-4 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center max-w-2xl mx-auto space-y-3"
+          >
+            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider">
+              Hubungi Kami
+            </span>
+            <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground mb-4 text-balance">
+              Mulai Perjalanan Anda
+            </h1>
+            <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+              Punya pertanyaan mengenai paket open trip, private trip kustom, rental armada mobil,
+              atau butuh konsultasi perjalanan? Tim kami siap melayani kebutuhan Anda.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Content Section */}
+      <div className="py-16 relative">
+        {/* Decorative background blurs */}
+        <div className="absolute top-20 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
+        <div className="absolute bottom-20 left-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl -z-10 pointer-events-none" />
+
+        <div className="container mx-auto px-4">
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
           {/* Phone/WhatsApp Card */}
@@ -194,6 +210,7 @@ export default function ContactClient() {
           ></iframe>
         </div>
       </div>
+    </div>
     </div>
   )
 }

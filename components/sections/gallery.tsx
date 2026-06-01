@@ -85,14 +85,13 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
 
   return (
     <section className="py-20 bg-background overflow-hidden relative border-t border-border/50">
-      
+
       {/* Section Header (Centered within grid container) */}
       <div className="container mx-auto px-4 md:px-6 mb-12">
         <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider uppercase">
-            <Compass className="w-3.5 h-3.5 animate-spin-slow" />
-            Galeri Perjalanan
-          </div>
+          <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
+            Trip Gallery
+          </span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground leading-tight">
             Momen Petualangan Bersama Airlangga
           </h2>
@@ -104,8 +103,8 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
 
       {/* Infinite Looping Coverflow Carousel (Full Width) */}
       <div className="relative w-full">
-        <div 
-          ref={emblaRef} 
+        <div
+          ref={emblaRef}
           className="overflow-hidden w-full cursor-grab active:cursor-grabbing"
         >
           <div className="flex select-none">
@@ -119,11 +118,10 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
                 >
                   {/* Carousel Card */}
                   <div
-                    className={`w-full aspect-[3/4] relative rounded-2xl overflow-hidden border border-border transition-all duration-500 ease-out ${
-                      isActive
-                        ? 'scale-100 opacity-100 shadow-2xl ring-4 ring-primary/10 z-10'
-                        : 'scale-90 opacity-40 z-0'
-                    }`}
+                    className={`w-full aspect-[3/4] relative rounded-2xl overflow-hidden border border-border transition-all duration-500 ease-out ${isActive
+                      ? 'scale-100 opacity-100 shadow-2xl ring-4 ring-primary/10 z-10'
+                      : 'scale-90 opacity-40 z-0'
+                      }`}
                   >
                     {/* Image */}
                     <Image
@@ -139,10 +137,9 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent opacity-85" />
 
                     {/* Text Details (Only on active slide) */}
-                    <div 
-                      className={`absolute bottom-0 left-0 right-0 p-6 z-10 text-white transition-all duration-500 ${
-                        isActive ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                      }`}
+                    <div
+                      className={`absolute bottom-0 left-0 right-0 p-6 z-10 text-white transition-all duration-500 ${isActive ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                        }`}
                     >
                       <span className="text-xs text-white/95 font-medium tracking-wide uppercase flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-primary" />

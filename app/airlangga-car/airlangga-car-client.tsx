@@ -118,25 +118,25 @@ Mohon konfirmasi ketersediaan. Terima kasih!`
       <Navbar />
 
       {/* Hero */}
-      <section className="relative pt-32 pb-20 bg-secondary overflow-hidden">
+      <section className="relative pt-32 pb-16 bg-secondary/30 overflow-hidden">
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent rounded-full blur-3xl" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent rounded-full blur-3xl animate-pulse" />
         </div>
 
         <div className="container mx-auto px-4 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center max-w-3xl mx-auto"
+            className="text-center max-w-3xl mx-auto space-y-3"
           >
-            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
+            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider">
               Airlangga Car
             </span>
             <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground mb-4 text-balance">
               Rental Kendaraan Premium
             </h1>
-            <p className="text-muted-foreground text-lg leading-relaxed">
+            <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
               Nikmati perjalanan dengan armada kendaraan terbaik kami. Tersedia berbagai pilihan
               mobil dan van premium dengan driver profesional.
             </p>

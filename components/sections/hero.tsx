@@ -29,13 +29,13 @@ export function HeroSection() {
 
       {/* Content */}
       <div className="relative container mx-auto px-4 pt-20">
-        <div className="max-w-3xl">
+        <div className="max-w-4xl">
           <div className="space-y-6">
 
             {/* Heading */}
             <h1 className="font-serif font-bold text-4xl md:text-5xl lg:text-6xl text-background leading-tight text-balance">
-              Jelajahi Dunia Bersama{' '}
-              <span className="text-accent">Airlangga Travel</span>
+              Let's Travel With Us{' '}
+              <span className="text-accent">Airlangga Tour and Travel</span>
             </h1>
 
             {/* Subheading */}

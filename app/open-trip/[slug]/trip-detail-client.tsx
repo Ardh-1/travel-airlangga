@@ -103,7 +103,7 @@ export default function TripDetailPageClient({ trip }: TripDetailPageClientProps
       <Navbar />
 
       {/* Breadcrumb */}
-      <div className="bg-secondary pt-24 pb-4">
+      <div className="bg-secondary/30 pt-24 pb-4">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-2 text-sm">
             <Link href="/" className="text-muted-foreground hover:text-primary">
@@ -120,7 +120,7 @@ export default function TripDetailPageClient({ trip }: TripDetailPageClientProps
       </div>
 
       {/* Back Button */}
-      <div className="bg-secondary pb-4">
+      <div className="bg-secondary/30 pb-4">
         <div className="container mx-auto px-4">
           <Button asChild variant="ghost" className="gap-2 px-0 hover:bg-transparent">
             <Link href="/open-trip">

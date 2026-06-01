@@ -13,10 +13,7 @@ export default function AboutPage() {
     <main className="min-h-screen bg-background flex flex-col justify-between">
       <div>
         <Navbar />
-        {/* Padding top is applied to offset the fixed navbar */}
-        <div className="pt-20">
-          <AboutClient />
-        </div>
+        <AboutClient />
       </div>
       <Footer />
       <WhatsAppButton />
