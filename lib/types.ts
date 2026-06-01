@@ -71,9 +71,7 @@ export interface PrivateTripRequest {
 
 export interface GalleryItem {
   id: string
-  title: string
   location: string
   image: string
-  category: string
   createdAt?: string
 }

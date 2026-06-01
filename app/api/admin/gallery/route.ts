@@ -27,10 +27,8 @@ export async function POST(req: Request) {
     const newItem = await (prisma as any).galleryItem.create({
       data: {
         id,
-        title: data.title,
         location: data.location,
         image: data.image,
-        category: data.category,
       } as any
     })
 
@@ -54,13 +52,16 @@ export async function PUT(req: Request) {
       return NextResponse.json({ success: false, error: 'Missing gallery item ID' }, { status: 400 })
     }
 
-    await (prisma as any).galleryItem.update({
+    await (prisma as any).galleryItem.upsert({
       where: { id },
-      data: {
-        title: data.title,
+      update: {
         location: data.location,
         image: data.image,
-        category: data.category,
+      } as any,
+      create: {
+        id,
+        location: data.location,
+        image: data.image,
       } as any
     })
 

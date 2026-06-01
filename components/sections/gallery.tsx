@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Maximize2, X, Compass, Eye } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X, Compass, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import useEmblaCarousel from 'embla-carousel-react'
 
@@ -12,52 +12,38 @@ import type { GalleryItem } from '@/lib/types'
 const staticGalleryItems: GalleryItem[] = [
   {
     id: '1',
-    title: 'Pelayaran Phinisi Komodo',
     location: 'Taman Nasional Komodo, NTT',
-    image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1200&q=80',
-    category: 'Trip Bahari'
+    image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '2',
-    title: 'Kabut Pagi Gunung Bromo',
     location: 'Gunung Bromo, Jawa Timur',
-    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80',
-    category: 'Pegunungan'
+    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '3',
-    title: 'Kelingking Cliff Nusa Penida',
     location: 'Nusa Penida, Bali',
-    image: 'https://images.unsplash.com/photo-1502759683299-cdcd6974244f?auto=format&fit=crop&w=1200&q=80',
-    category: 'Pantai'
+    image: 'https://images.unsplash.com/photo-1502759683299-cdcd6974244f?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '4',
-    title: 'Stupa Agung Borobudur',
     location: 'Magelang, Jawa Tengah',
-    image: 'https://images.unsplash.com/photo-1604999333679-b86d54738315?auto=format&fit=crop&w=1200&q=80',
-    category: 'Budaya'
+    image: 'https://images.unsplash.com/photo-1604999333679-b86d54738315?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '5',
-    title: 'Gugusan Karst Raja Ampat',
     location: 'Raja Ampat, Papua Barat',
-    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
-    category: 'Bahari'
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '6',
-    title: 'Terasering Tegalalang',
     location: 'Ubud, Bali',
-    image: 'https://images.unsplash.com/photo-1552608494-18ba4c799d6a?auto=format&fit=crop&w=1200&q=80',
-    category: 'Petualangan'
+    image: 'https://images.unsplash.com/photo-1552608494-18ba4c799d6a?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '7',
-    title: 'Keindahan Danau Toba',
     location: 'Samosir, Sumatera Utara',
-    image: 'https://images.unsplash.com/photo-1617042371383-a13e36d92a21?auto=format&fit=crop&w=1200&q=80',
-    category: 'Danau'
+    image: 'https://images.unsplash.com/photo-1617042371383-a13e36d92a21?auto=format&fit=crop&w=1200&q=80'
   }
 ]
 
@@ -128,21 +114,21 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
               return (
                 <div
                   key={item.id}
-                  className="flex-[0_0_75%] sm:flex-[0_0_50%] md:flex-[0_0_38%] lg:flex-[0_0_28%] px-2 sm:px-3 min-w-0 relative"
+                  className="flex-[0_0_80%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] px-3 sm:px-4 min-w-0 relative"
                   onClick={() => handleSlideClick(index)}
                 >
                   {/* Carousel Card */}
                   <div
-                    className={`w-full aspect-[3/4] relative rounded-3xl overflow-hidden border border-border/60 transition-all duration-500 ease-out ${
+                    className={`w-full aspect-[3/4] relative rounded-2xl overflow-hidden border border-border transition-all duration-500 ease-out ${
                       isActive
                         ? 'scale-100 opacity-100 shadow-2xl ring-4 ring-primary/10 z-10'
-                        : 'scale-50 opacity-35 z-0'
+                        : 'scale-90 opacity-40 z-0'
                     }`}
                   >
                     {/* Image */}
                     <Image
                       src={item.image}
-                      alt={item.title}
+                      alt={item.location}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 30vw"
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
@@ -152,36 +138,16 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent opacity-85" />
 
-                    {/* Category Tag */}
-                    <div className="absolute top-5 left-5 z-10">
-                      <span className="text-[10px] font-bold text-white bg-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-full uppercase tracking-wider">
-                        {item.category}
-                      </span>
-                    </div>
-
-                    {/* Scale Action Overlay (Only on active slide) */}
-                    {isActive && (
-                      <div className="absolute top-5 right-5 z-10 bg-white/10 backdrop-blur-md text-white rounded-full p-2.5 hover:bg-white/20 transition-all">
-                        <Eye className="w-4.5 h-4.5" />
-                      </div>
-                    )}
-
                     {/* Text Details (Only on active slide) */}
                     <div 
-                      className={`absolute bottom-0 left-0 right-0 p-6 md:p-8 z-10 text-white transition-all duration-500 ${
+                      className={`absolute bottom-0 left-0 right-0 p-6 z-10 text-white transition-all duration-500 ${
                         isActive ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                       }`}
                     >
-                      <span className="text-xs text-primary font-semibold tracking-wide uppercase block mb-1">
+                      <span className="text-xs text-white/95 font-medium tracking-wide uppercase flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-primary" />
                         {item.location}
                       </span>
-                      <h3 className="font-serif font-bold text-xl md:text-2xl leading-tight">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs text-gray-300 mt-2.5 flex items-center gap-1.5">
-                        <Maximize2 className="w-3.5 h-3.5" />
-                        Klik untuk memperbesar gambar
-                      </p>
                     </div>
 
                     {/* Carousel Arrow Controls (Attached to Left/Right edge of the active card) */}
@@ -252,7 +218,7 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
             >
               <Image
                 src={activeItem.image}
-                alt={activeItem.title}
+                alt={activeItem.location}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1200px) 100vw, 1200px"
@@ -261,12 +227,10 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
 
               {/* Caption */}
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white">
-                <span className="text-xs text-primary font-bold tracking-wider uppercase block mb-1">
-                  {activeItem.location} • {activeItem.category}
+                <span className="text-xs text-white/90 font-medium tracking-wider uppercase flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-primary" />
+                  {activeItem.location}
                 </span>
-                <h3 className="font-serif font-bold text-2xl md:text-3xl leading-tight">
-                  {activeItem.title}
-                </h3>
               </div>
             </motion.div>
           </motion.div>

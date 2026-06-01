@@ -258,52 +258,38 @@ export async function getBookingByCode(bookingCode: string): Promise<Booking | n
 export const staticGalleryItems: GalleryItem[] = [
   {
     id: '1',
-    title: 'Pelayaran Phinisi Komodo',
     location: 'Taman Nasional Komodo, NTT',
-    image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1200&q=80',
-    category: 'Trip Bahari'
+    image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '2',
-    title: 'Kabut Pagi Gunung Bromo',
     location: 'Gunung Bromo, Jawa Timur',
-    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80',
-    category: 'Pegunungan'
+    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '3',
-    title: 'Kelingking Cliff Nusa Penida',
     location: 'Nusa Penida, Bali',
-    image: 'https://images.unsplash.com/photo-1502759683299-cdcd6974244f?auto=format&fit=crop&w=1200&q=80',
-    category: 'Pantai'
+    image: 'https://images.unsplash.com/photo-1502759683299-cdcd6974244f?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '4',
-    title: 'Stupa Agung Borobudur',
     location: 'Magelang, Jawa Tengah',
-    image: 'https://images.unsplash.com/photo-1604999333679-b86d54738315?auto=format&fit=crop&w=1200&q=80',
-    category: 'Budaya'
+    image: 'https://images.unsplash.com/photo-1604999333679-b86d54738315?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '5',
-    title: 'Gugusan Karst Raja Ampat',
     location: 'Raja Ampat, Papua Barat',
-    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
-    category: 'Bahari'
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '6',
-    title: 'Terasering Tegalalang',
     location: 'Ubud, Bali',
-    image: 'https://images.unsplash.com/photo-1552608494-18ba4c799d6a?auto=format&fit=crop&w=1200&q=80',
-    category: 'Petualangan'
+    image: 'https://images.unsplash.com/photo-1552608494-18ba4c799d6a?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: '7',
-    title: 'Keindahan Danau Toba',
     location: 'Samosir, Sumatera Utara',
-    image: 'https://images.unsplash.com/photo-1617042371383-a13e36d92a21?auto=format&fit=crop&w=1200&q=80',
-    category: 'Danau'
+    image: 'https://images.unsplash.com/photo-1617042371383-a13e36d92a21?auto=format&fit=crop&w=1200&q=80'
   }
 ]
 
@@ -320,10 +306,8 @@ export async function getGalleryItems(): Promise<GalleryItem[]> {
 
     return dbItems.map((item: any) => ({
       id: item.id,
-      title: item.title,
       location: item.location,
       image: item.image,
-      category: item.category,
       createdAt: item.createdAt.toISOString(),
     }))
   } catch (error) {

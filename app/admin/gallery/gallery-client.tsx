@@ -13,7 +13,6 @@ import {
   X,
   Compass,
   MapPin,
-  Tag,
   Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -34,20 +33,9 @@ interface GalleryClientProps {
 }
 
 const emptyFormValues = {
-  title: '',
   location: '',
   image: '',
-  category: 'Trip Bahari',
 }
-
-const categories = [
-  'Trip Bahari',
-  'Pegunungan',
-  'Pantai',
-  'Budaya',
-  'Petualangan',
-  'Danau',
-]
 
 export default function GalleryClient({ initialItems, isMockData }: GalleryClientProps) {
   const [items, setItems] = useState<GalleryItem[]>(initialItems)
@@ -91,13 +79,10 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
   const [isBatchOpen, setIsBatchOpen] = useState(false)
   const [batchItems, setBatchItems] = useState<{
     id: string
-    title: string
     image: string
     location: string
-    category: string
   }[]>([])
   const [batchSharedLocation, setBatchSharedLocation] = useState('')
-  const [batchSharedCategory, setBatchSharedCategory] = useState('Trip Bahari')
   const [isBatchUploading, setIsBatchUploading] = useState(false)
   const [batchProgress, setBatchProgress] = useState(0)
 
@@ -118,20 +103,10 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
 
         const reader = new FileReader()
         reader.onloadend = () => {
-          const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name
-          const title = baseName
-            .replace(/[-_]+/g, ' ')
-            .trim()
-            .split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
-
           tempItems.push({
             id: crypto.randomUUID(),
-            title,
             image: reader.result as string,
             location: batchSharedLocation || '',
-            category: batchSharedCategory || 'Trip Bahari',
           })
           resolve()
         }
@@ -161,9 +136,9 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
 
     if (batchItems.length === 0) return
 
-    const invalidItem = batchItems.find(item => !item.title.trim() || !item.location.trim())
+    const invalidItem = batchItems.find(item => !item.location.trim())
     if (invalidItem) {
-      toast.error('Semua foto harus memiliki Judul dan Lokasi')
+      toast.error('Semua foto harus memiliki Lokasi')
       return
     }
 
@@ -178,10 +153,10 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
     for (let i = 0; i < batchItems.length; i++) {
       const item = batchItems[i]
       const submissionData = {
-        title: item.title,
+        title: item.location,
         location: item.location,
         image: item.image,
-        category: item.category,
+        category: 'Umum',
       }
 
       if (isMockData) {
@@ -211,12 +186,12 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
           } else {
             failCount++
             failedItemsList.push(item)
-            console.error(`Failed to upload ${item.title}:`, res.error || 'Unknown error')
+            console.error(`Failed to upload ${item.location}:`, res.error || 'Unknown error')
           }
         } catch (error) {
           failCount++
           failedItemsList.push(item)
-          console.error(`Failed to upload ${item.title}:`, error)
+          console.error(`Failed to upload ${item.location}:`, error)
         }
         setBatchProgress(Math.round(((i + 1) / batchItems.length) * 100))
       }
@@ -249,10 +224,8 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
   const handleEditClick = (item: GalleryItem) => {
     setEditingItem(item)
     setFormValues({
-      title: item.title,
       location: item.location,
       image: item.image,
-      category: item.category,
     })
     setIsFormOpen(true)
   }
@@ -288,16 +261,16 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formValues.title || !formValues.location || !formValues.image || !formValues.category) {
+    if (!formValues.location || !formValues.image) {
       toast.error('Mohon isi semua field yang wajib (*)')
       return
     }
 
     const submissionData = {
-      title: formValues.title,
+      title: formValues.location,
       location: formValues.location,
       image: formValues.image,
-      category: formValues.category,
+      category: 'Umum',
     }
 
     if (isMockData) {
@@ -382,9 +355,7 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
 
   const filteredItems = items.filter(
     (item) =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.category.toLowerCase().includes(searchQuery.toLowerCase())
+      item.location.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (
@@ -452,8 +423,7 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
               <thead>
                 <tr className="border-b border-border bg-secondary/30 text-xs font-semibold uppercase text-muted-foreground">
                   <th className="p-4 w-28">Preview</th>
-                  <th className="p-4">Foto & Lokasi</th>
-                  <th className="p-4">Kategori</th>
+                  <th className="p-4">Lokasi Foto</th>
                   <th className="p-4 text-right">Aksi</th>
                 </tr>
               </thead>
@@ -464,7 +434,7 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
                       <div className="relative w-20 h-28 rounded-lg overflow-hidden border border-border/80 shadow-sm bg-secondary">
                         <Image
                           src={item.image}
-                          alt={item.title}
+                          alt={item.location}
                           fill
                           className="object-cover"
                           sizes="80px"
@@ -472,19 +442,10 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
                       </div>
                     </td>
                     <td className="p-4">
-                      <div className="font-serif font-semibold text-base text-foreground">
-                        {item.title}
-                      </div>
-                      <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                        <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+                      <div className="text-sm font-semibold text-foreground flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-primary shrink-0" />
                         {item.location}
                       </div>
-                    </td>
-                    <td className="p-4">
-                      <Badge variant="secondary" className="flex items-center gap-1 w-max font-medium">
-                        <Tag className="w-3 h-3" />
-                        {item.category}
-                      </Badge>
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex justify-end gap-2">
@@ -538,18 +499,6 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-5">
-            {/* Title */}
-            <div className="space-y-1.5">
-              <Label htmlFor="title">Judul Foto *</Label>
-              <Input
-                id="title"
-                value={formValues.title}
-                onChange={(e) => setFormValues((prev) => ({ ...prev, title: e.target.value }))}
-                placeholder="Contoh: Sunset Indah Kelingking Cliff"
-                required
-              />
-            </div>
-
             {/* Location */}
             <div className="space-y-1.5">
               <Label htmlFor="location">Lokasi *</Label>
@@ -608,23 +557,6 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
                   />
                 </div>
               </div>
-            </div>
-
-            {/* Category */}
-            <div className="space-y-1.5">
-              <Label htmlFor="category">Kategori *</Label>
-              <select
-                id="category"
-                value={formValues.category}
-                onChange={(e) => setFormValues((prev) => ({ ...prev, category: e.target.value }))}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
             </div>
 
             {/* Form Action Buttons */}
@@ -686,29 +618,15 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
                 <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider">
                   Pengaturan Masal (Terapkan ke Semua)
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
-                  <div className="space-y-1">
+                <div className="flex flex-col sm:flex-row gap-3 items-end">
+                  <div className="flex-1 space-y-1.5 w-full">
                     <Label className="text-xs">Lokasi Bersama</Label>
                     <Input
                       value={batchSharedLocation}
                       onChange={(e) => setBatchSharedLocation(e.target.value)}
                       placeholder="Contoh: Labuan Bajo, Flores"
-                      className="h-9 text-xs"
+                      className="h-10 text-xs rounded-lg"
                     />
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-xs">Kategori Bersama</Label>
-                    <select
-                      value={batchSharedCategory}
-                      onChange={(e) => setBatchSharedCategory(e.target.value)}
-                      className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-xs focus-visible:outline-none"
-                    >
-                      {categories.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
-                        </option>
-                      ))}
-                    </select>
                   </div>
                   <Button
                     type="button"
@@ -717,11 +635,11 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
                       setBatchItems(prev => prev.map(item => ({
                         ...item,
                         location: batchSharedLocation || item.location,
-                        category: batchSharedCategory || item.category
+                        category: 'Umum'
                       })))
-                      toast.success('Pengaturan lokasi & kategori diterapkan ke semua foto!')
+                      toast.success('Pengaturan lokasi diterapkan ke semua foto!')
                     }}
-                    className="h-9 text-xs font-medium cursor-pointer"
+                    className="h-10 text-xs font-medium cursor-pointer rounded-lg px-5 w-full sm:w-auto"
                   >
                     Terapkan Ke Semua Foto
                   </Button>
@@ -742,20 +660,7 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
                     </div>
 
                     {/* Individual fields */}
-                    <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
-                      <div className="space-y-1">
-                        <Label className="text-[10px] text-muted-foreground">Judul Foto *</Label>
-                        <Input
-                          value={item.title}
-                          onChange={(e) => {
-                            const val = e.target.value
-                            setBatchItems(prev => prev.map(p => p.id === item.id ? { ...p, title: val } : p))
-                          }}
-                          placeholder="Masukkan judul..."
-                          required
-                          className="h-9 text-xs"
-                        />
-                      </div>
+                    <div className="flex-1 w-full">
                       <div className="space-y-1">
                         <Label className="text-[10px] text-muted-foreground">Lokasi *</Label>
                         <Input
@@ -764,27 +669,10 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
                             const val = e.target.value
                             setBatchItems(prev => prev.map(p => p.id === item.id ? { ...p, location: val } : p))
                           }}
-                          placeholder="Masukkan lokasi..."
+                          placeholder="Masukkan lokasi foto..."
                           required
-                          className="h-9 text-xs"
+                          className="h-10 text-xs rounded-lg"
                         />
-                      </div>
-                      <div className="space-y-1">
-                        <Label className="text-[10px] text-muted-foreground">Kategori *</Label>
-                        <select
-                          value={item.category}
-                          onChange={(e) => {
-                            const val = e.target.value
-                            setBatchItems(prev => prev.map(p => p.id === item.id ? { ...p, category: val } : p))
-                          }}
-                          className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-xs focus-visible:outline-none"
-                        >
-                          {categories.map((cat) => (
-                            <option key={cat} value={cat}>
-                              {cat}
-                            </option>
-                          ))}
-                        </select>
                       </div>
                     </div>
 

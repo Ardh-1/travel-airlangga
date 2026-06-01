@@ -1,7 +1,7 @@
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { WhatsAppButton } from '@/components/whatsapp-button'
-import { UnderConstruction } from '@/components/under-construction'
+import { AboutClient } from './about-client'
 
 export const metadata = {
   title: 'About Us - Airlangga Travel',
@@ -15,7 +15,7 @@ export default function AboutPage() {
         <Navbar />
         {/* Padding top is applied to offset the fixed navbar */}
         <div className="pt-20">
-          <UnderConstruction type="about" />
+          <AboutClient />
         </div>
       </div>
       <Footer />

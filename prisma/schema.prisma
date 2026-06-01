@@ -173,10 +173,8 @@ model Testimonial {
 
 model GalleryItem {
   id        String   @id @default(uuid())
-  title     String
   location  String
   image     String
-  category  String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
