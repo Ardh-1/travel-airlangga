@@ -6,6 +6,7 @@ const __dirname = dirname(__filename)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   outputFileTracingRoot: __dirname,
   typescript: {
     ignoreBuildErrors: true,
@@ -19,6 +20,9 @@ const nextConfig = {
     },
   },
   allowedDevOrigins: ['192.168.18.7', 'localhost:3000'],
+  webpack: (config) => {
+    return config
+  },
 }
 
 export default nextConfig
