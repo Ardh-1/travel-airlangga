@@ -14,6 +14,8 @@ import {
   Compass,
   MapPin,
   Loader2,
+  Home,
+  Info,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -35,6 +37,8 @@ interface GalleryClientProps {
 const emptyFormValues = {
   location: '',
   image: '',
+  showOnHome: true,
+  showOnAbout: false,
 }
 
 export default function GalleryClient({ initialItems, isMockData }: GalleryClientProps) {
@@ -157,6 +161,8 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
         location: item.location,
         image: item.image,
         category: 'Umum',
+        showOnHome: true,
+        showOnAbout: false,
       }
 
       if (isMockData) {
@@ -226,6 +232,8 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
     setFormValues({
       location: item.location,
       image: item.image,
+      showOnHome: item.showOnHome ?? true,
+      showOnAbout: item.showOnAbout ?? false,
     })
     setIsFormOpen(true)
   }
@@ -258,6 +266,96 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
     })
   }
 
+  const handleToggleHome = async (item: GalleryItem) => {
+    const updatedValue = !(item.showOnHome ?? true)
+    
+    // Optimistic update
+    setItems((prev) =>
+      prev.map((i) => (i.id === item.id ? { ...i, showOnHome: updatedValue } : i))
+    )
+
+    if (isMockData) {
+      toast.warning('Mode Simulasi: Tampilan di Home diubah di memori sementara')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/admin/gallery', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: item.id,
+          location: item.location,
+          image: item.image,
+          showOnHome: updatedValue,
+          showOnAbout: item.showOnAbout ?? false,
+        }),
+      })
+      const res = await response.json()
+      if (!res.success) {
+        // Rollback
+        setItems((prev) =>
+          prev.map((i) => (i.id === item.id ? { ...i, showOnHome: !updatedValue } : i))
+        )
+        toast.error(res.error || 'Gagal mengubah status tampilan')
+      } else {
+        toast.success(`Foto ${updatedValue ? 'ditampilkan' : 'disembunyikan'} di Beranda!`)
+      }
+    } catch (error) {
+      // Rollback
+      setItems((prev) =>
+        prev.map((i) => (i.id === item.id ? { ...i, showOnHome: !updatedValue } : i))
+      )
+      console.error(error)
+      toast.error('Gagal memproses perubahan')
+    }
+  }
+
+  const handleToggleAbout = async (item: GalleryItem) => {
+    const updatedValue = !(item.showOnAbout ?? false)
+
+    // Optimistic update
+    setItems((prev) =>
+      prev.map((i) => (i.id === item.id ? { ...i, showOnAbout: updatedValue } : i))
+    )
+
+    if (isMockData) {
+      toast.warning('Mode Simulasi: Tampilan di About diubah di memori sementara')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/admin/gallery', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: item.id,
+          location: item.location,
+          image: item.image,
+          showOnHome: item.showOnHome ?? true,
+          showOnAbout: updatedValue,
+        }),
+      })
+      const res = await response.json()
+      if (!res.success) {
+        // Rollback
+        setItems((prev) =>
+          prev.map((i) => (i.id === item.id ? { ...i, showOnAbout: !updatedValue } : i))
+        )
+        toast.error(res.error || 'Gagal mengubah status tampilan')
+      } else {
+        toast.success(`Foto ${updatedValue ? 'ditampilkan' : 'disembunyikan'} di Halaman About!`)
+      }
+    } catch (error) {
+      // Rollback
+      setItems((prev) =>
+        prev.map((i) => (i.id === item.id ? { ...i, showOnAbout: !updatedValue } : i))
+      )
+      console.error(error)
+      toast.error('Gagal memproses perubahan')
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -271,6 +369,8 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
       location: formValues.location,
       image: formValues.image,
       category: 'Umum',
+      showOnHome: formValues.showOnHome,
+      showOnAbout: formValues.showOnAbout,
     }
 
     if (isMockData) {
@@ -424,6 +524,8 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
                 <tr className="border-b border-border bg-secondary/30 text-xs font-semibold uppercase text-muted-foreground">
                   <th className="p-4 w-28">Preview</th>
                   <th className="p-4">Lokasi Foto</th>
+                  <th className="p-4">Tampilkan di Home</th>
+                  <th className="p-4">Tampilkan di About</th>
                   <th className="p-4 text-right">Aksi</th>
                 </tr>
               </thead>
@@ -446,6 +548,36 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
                         <MapPin className="w-4 h-4 text-primary shrink-0" />
                         {item.location}
                       </div>
+                    </td>
+                    <td className="p-4">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => handleToggleHome(item)}
+                        className={`rounded-full h-9 px-4 flex items-center gap-1.5 transition-all text-xs font-semibold cursor-pointer border ${
+                          item.showOnHome ?? true
+                            ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
+                            : 'bg-muted/10 text-muted-foreground border-transparent hover:bg-muted/20'
+                        }`}
+                      >
+                        <Home className="w-3.5 h-3.5" />
+                        {item.showOnHome ?? true ? 'Aktif' : 'Nonaktif'}
+                      </Button>
+                    </td>
+                    <td className="p-4">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => handleToggleAbout(item)}
+                        className={`rounded-full h-9 px-4 flex items-center gap-1.5 transition-all text-xs font-semibold cursor-pointer border ${
+                          item.showOnAbout ?? false
+                            ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
+                            : 'bg-muted/10 text-muted-foreground border-transparent hover:bg-muted/20'
+                        }`}
+                      >
+                        <Info className="w-3.5 h-3.5" />
+                        {item.showOnAbout ?? false ? 'Aktif' : 'Nonaktif'}
+                      </Button>
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex justify-end gap-2">
@@ -555,6 +687,41 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
                     placeholder="Contoh: https://images.unsplash.com/..."
                     className="h-10 text-xs"
                   />
+                </div>
+              </div>
+            </div>
+
+            {/* Display Settings */}
+            <div className="grid grid-cols-2 gap-4 p-4 bg-secondary/15 border border-border/80 rounded-xl">
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-xs font-semibold uppercase text-muted-foreground">Tampilan Beranda</Label>
+                <div className="flex items-center gap-2 mt-1">
+                  <input
+                    type="checkbox"
+                    id="showOnHome"
+                    checked={formValues.showOnHome}
+                    onChange={(e) => setFormValues((prev) => ({ ...prev, showOnHome: e.target.checked }))}
+                    className="w-4 h-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
+                  />
+                  <Label htmlFor="showOnHome" className="text-sm font-medium text-foreground cursor-pointer">
+                    Tampilkan di Home
+                  </Label>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-xs font-semibold uppercase text-muted-foreground">Tampilan Tentang Kami</Label>
+                <div className="flex items-center gap-2 mt-1">
+                  <input
+                    type="checkbox"
+                    id="showOnAbout"
+                    checked={formValues.showOnAbout}
+                    onChange={(e) => setFormValues((prev) => ({ ...prev, showOnAbout: e.target.checked }))}
+                    className="w-4 h-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
+                  />
+                  <Label htmlFor="showOnAbout" className="text-sm font-medium text-foreground cursor-pointer">
+                    Tampilkan di About
+                  </Label>
                 </div>
               </div>
             </div>

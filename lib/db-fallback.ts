@@ -259,37 +259,79 @@ export const staticGalleryItems: GalleryItem[] = [
   {
     id: '1',
     location: 'Taman Nasional Komodo, NTT',
-    image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: true,
+    showOnAbout: true
   },
   {
     id: '2',
     location: 'Gunung Bromo, Jawa Timur',
-    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: true,
+    showOnAbout: true
   },
   {
     id: '3',
     location: 'Nusa Penida, Bali',
-    image: 'https://images.unsplash.com/photo-1502759683299-cdcd6974244f?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1502759683299-cdcd6974244f?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: true,
+    showOnAbout: false
   },
   {
     id: '4',
     location: 'Magelang, Jawa Tengah',
-    image: 'https://images.unsplash.com/photo-1604999333679-b86d54738315?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1604999333679-b86d54738315?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: true,
+    showOnAbout: false
   },
   {
     id: '5',
     location: 'Raja Ampat, Papua Barat',
-    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: true,
+    showOnAbout: true
   },
   {
     id: '6',
     location: 'Ubud, Bali',
-    image: 'https://images.unsplash.com/photo-1552608494-18ba4c799d6a?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1552608494-18ba4c799d6a?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: true,
+    showOnAbout: true
   },
   {
     id: '7',
     location: 'Samosir, Sumatera Utara',
-    image: 'https://images.unsplash.com/photo-1617042371383-a13e36d92a21?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1617042371383-a13e36d92a21?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: true,
+    showOnAbout: false
+  },
+  {
+    id: '8',
+    location: 'Pura Luhur Uluwatu, Bali',
+    image: 'https://images.unsplash.com/photo-1542044896530-05d85be9b11a?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: false,
+    showOnAbout: true
+  },
+  {
+    id: '9',
+    location: 'Dataran Tinggi Dieng, Jawa Tengah',
+    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: false,
+    showOnAbout: true
+  },
+  {
+    id: '10',
+    location: 'Taman Nasional Bunaken, Sulawesi Utara',
+    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: false,
+    showOnAbout: true
+  },
+  {
+    id: '11',
+    location: 'Sungai Kapuas, Kalimantan Barat',
+    image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80',
+    showOnHome: false,
+    showOnAbout: true
   }
 ]
 
@@ -308,6 +350,8 @@ export async function getGalleryItems(): Promise<GalleryItem[]> {
       id: item.id,
       location: item.location,
       image: item.image,
+      showOnHome: item.showOnHome ?? true,
+      showOnAbout: item.showOnAbout ?? false,
       createdAt: item.createdAt.toISOString(),
     }))
   } catch (error) {

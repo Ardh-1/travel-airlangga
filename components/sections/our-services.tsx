@@ -9,28 +9,28 @@ const services = [
   {
     title: 'Open Trip',
     description: 'Gabung bersama traveler lain dan jelajahi destinasi impian dengan jadwal teratur dan harga lebih hemat.',
-    image: '/images/services-1.png',
+    image: '/images/services-1.webp',
     link: '/open-trip',
     cta: 'Lihat Destinasi',
   },
   {
     title: 'Private Trip',
     description: 'Rancang liburan impian Anda secara eksklusif. Bebas tentukan tanggal, rute, dan fasilitas sesuai keinginan.',
-    image: '/images/services-2.png',
+    image: '/images/services-2.webp',
     link: '/private-trip',
     cta: 'Konsultasi Privat',
   },
   {
     title: 'Corporate Trip',
     description: 'Solusi perjalanan bisnis, outing, gathering, dan kegiatan corporate dengan fasilitas premium & profesional.',
-    image: '/images/services-3.png',
+    image: '/images/services-3.webp',
     link: '/contact',
     cta: 'Hubungi Hub',
   },
   {
     title: 'Edutainment Trip',
     description: 'Perjalanan edukasi interaktif dan menyenangkan yang dirancang khusus untuk sekolah, kampus, dan komunitas.',
-    image: '/images/services-4.png',
+    image: '/images/services-4.webp',
     link: '/contact',
     cta: 'Info Paket Edu',
   },
@@ -94,6 +94,7 @@ export function OurServicesSection() {
                     alt={service.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                 </div>
 

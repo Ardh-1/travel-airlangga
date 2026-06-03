@@ -630,7 +630,7 @@ export default function TrackOrderPage() {
               Lacak Pesanan
             </span>
             <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground text-balance">
-              Lacak Status Pesanan
+              Track Your Booking Status
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
               Masukkan kode booking Anda (misal: ALG-2026-XXX) untuk melacak status pembayaran dan detail reservasi Anda secara real-time.

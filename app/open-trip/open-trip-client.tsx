@@ -94,14 +94,13 @@ export default function OpenTripClient({ trips }: OpenTripClientProps) {
             className="text-center max-w-2xl mx-auto space-y-3"
           >
             <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider">
-              Open Trip
+              Paket Open Trip
             </span>
             <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground text-balance">
               Explore Our Open Trip Schedule
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
-              A Budget-Friendly Way to Explore Your Dream Destinations!
-              A smart vacation solution for those looking to explore popular destinations, meet new friends, and save money. Various epic destinations await you here, check out the details below!
+              Cara hemat untuk menjelajahi destinasi impian Anda! Solusi liburan pintar untuk menjelajahi destinasi populer, bertemu teman baru, dan menghemat biaya. Berbagai destinasi menarik menunggu Anda di sini, cek jadwal selengkapnya di bawah ini!
             </p>
           </motion.div>
         </div>

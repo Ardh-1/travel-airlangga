@@ -47,6 +47,8 @@ export async function createGalleryItem(data: Omit<GalleryItem, 'id'>) {
         id,
         location: data.location,
         image: data.image,
+        showOnHome: data.showOnHome ?? true,
+        showOnAbout: data.showOnAbout ?? false,
       } as any
     })
 
@@ -75,11 +77,15 @@ export async function updateGalleryItem(id: string, data: Omit<GalleryItem, 'id'
       update: {
         location: data.location,
         image: data.image,
+        showOnHome: data.showOnHome,
+        showOnAbout: data.showOnAbout,
       } as any,
       create: {
         id,
         location: data.location,
         image: data.image,
+        showOnHome: data.showOnHome ?? true,
+        showOnAbout: data.showOnAbout ?? false,
       } as any
     })
 

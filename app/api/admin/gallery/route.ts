@@ -29,6 +29,8 @@ export async function POST(req: Request) {
         id,
         location: data.location,
         image: data.image,
+        showOnHome: data.showOnHome ?? true,
+        showOnAbout: data.showOnAbout ?? false,
       } as any
     })
 
@@ -57,11 +59,15 @@ export async function PUT(req: Request) {
       update: {
         location: data.location,
         image: data.image,
+        showOnHome: data.showOnHome,
+        showOnAbout: data.showOnAbout,
       } as any,
       create: {
         id,
         location: data.location,
         image: data.image,
+        showOnHome: data.showOnHome ?? true,
+        showOnAbout: data.showOnAbout ?? false,
       } as any
     })
 

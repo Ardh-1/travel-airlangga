@@ -131,10 +131,10 @@ Mohon konfirmasi ketersediaan. Terima kasih!`
             className="text-center max-w-3xl mx-auto space-y-3"
           >
             <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider">
-              Airlangga Car
+              Layanan Sewa Mobil
             </span>
             <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground mb-4 text-balance">
-              Rental Kendaraan Premium
+              Premium Vehicle Rental Services
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
               Nikmati perjalanan dengan armada kendaraan terbaik kami. Tersedia berbagai pilihan
@@ -153,6 +153,9 @@ Mohon konfirmasi ketersediaan. Terima kasih!`
             viewport={{ once: true }}
             className="text-center mb-12"
           >
+            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
+              Armada Kami
+            </span>
             <h2 className="font-serif font-bold text-2xl md:text-3xl text-foreground mb-2">
               Our Fleet
             </h2>
@@ -178,6 +181,7 @@ Mohon konfirmasi ketersediaan. Terima kasih!`
                     alt={car.name}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
                   
@@ -251,8 +255,11 @@ Mohon konfirmasi ketersediaan. Terima kasih!`
       <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
+            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
+              Keunggulan Kami
+            </span>
             <h2 className="font-serif font-bold text-2xl md:text-3xl text-foreground mb-8">
-              Mengapa Memilih Airlangga Car?
+              Why Choose Airlangga Car?
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -307,6 +314,7 @@ Mohon konfirmasi ketersediaan. Terima kasih!`
                     alt={selectedCar.name}
                     fill
                     className="object-cover"
+                    sizes="80px"
                   />
                 </div>
                 <div>

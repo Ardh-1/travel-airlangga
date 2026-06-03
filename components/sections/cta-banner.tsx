@@ -22,7 +22,7 @@ export function CTABannerSection() {
           <div className="relative flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="text-center lg:text-left">
               <h2 className="font-serif font-bold text-3xl md:text-4xl text-foreground mb-4 text-balance">
-                Siap Berangkat?
+                Ready for Your Next Adventure?
               </h2>
               <p className="text-muted-foreground max-w-lg leading-relaxed">
                 Konsultasikan rencana perjalanan Anda dengan tim kami. 

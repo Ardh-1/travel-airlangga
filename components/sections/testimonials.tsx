@@ -41,7 +41,7 @@ export function TestimonialsSection({ initialTestimonials }: { initialTestimonia
             transition={{ delay: 0.1 }}
             className="font-serif font-bold text-3xl md:text-5xl text-foreground mb-4 text-balance"
           >
-            Saksikan Keseruannya
+            Watch the Excitement
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 15 }}

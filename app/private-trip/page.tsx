@@ -107,10 +107,10 @@ Mohon informasi penawaran dan tindak lanjutnya. Terima kasih!`
               className="text-center max-w-3xl mx-auto space-y-3"
             >
               <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider">
-                Private Trip
+                Paket Private Trip
               </span>
               <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground text-balance">
-                Rancang Liburan Impian Anda
+                Customize Your Dream Vacation
               </h1>
               <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
                 Silakan isi data diri dan rencana perjalanan kustom Anda di bawah ini. Tim konsultan travel kami akan segera memformulasikan penawaran terbaik untuk Anda.

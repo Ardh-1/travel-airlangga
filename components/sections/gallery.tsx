@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, X, Compass, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import useEmblaCarousel from 'embla-carousel-react'
+import { getOptimizedUnsplashUrl } from '@/lib/utils'
 
 import type { GalleryItem } from '@/lib/types'
 
@@ -52,7 +53,8 @@ interface GallerySectionProps {
 }
 
 export function GallerySection({ initialItems }: GallerySectionProps) {
-  const items = initialItems && initialItems.length > 0 ? initialItems : staticGalleryItems
+  const items = (initialItems && initialItems.length > 0 ? initialItems : staticGalleryItems)
+    .filter(item => item.showOnHome !== false)
   const [activeItem, setActiveItem] = useState<GalleryItem | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -90,10 +92,10 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
       <div className="container mx-auto px-4 md:px-6 mb-12">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-            Trip Gallery
+            Galeri Perjalanan
           </span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground leading-tight">
-            Momen Petualangan Bersama Airlangga
+            Adventure Moments with Airlangga
           </h2>
           <p className="text-sm md:text-base text-muted-foreground">
             Jelajahi keindahan Indonesia melalui bidikan lensa dokumentasi otentik perjalanan para traveler kami.
@@ -125,7 +127,7 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
                   >
                     {/* Image */}
                     <Image
-                      src={item.image}
+                      src={getOptimizedUnsplashUrl(item.image, 600, 75)}
                       alt={item.location}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 30vw"

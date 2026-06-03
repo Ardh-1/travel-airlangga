@@ -117,16 +117,23 @@ export default function TripsClient({ initialTrips, isMockData }: TripsClientPro
 
   // Auto generate slug from title
   const handleTitleChange = (val: string) => {
-    const generatedSlug = val
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '')
+    const generatedSlug = generateSlug(val)
     
-    setFormValues((prev) => ({
-      ...prev,
-      title: val,
-      slug: prev.slug === generateSlug(prev.title) || prev.slug === '' ? generatedSlug : prev.slug,
-    }))
+    setFormValues((prev) => {
+      // Auto-generate slug only when adding a new package (!editingTrip)
+      // and only if the slug hasn't been manually customized (i.e. it is empty or matches the old title's slug)
+      const isNew = !editingTrip
+      const isSlugEmpty = prev.slug.trim() === ''
+      const isSlugMatchingOldTitle = prev.slug === generateSlug(prev.title)
+      
+      const shouldUpdateSlug = isNew && (isSlugEmpty || isSlugMatchingOldTitle)
+      
+      return {
+        ...prev,
+        title: val,
+        slug: shouldUpdateSlug ? generatedSlug : prev.slug,
+      }
+    })
   }
 
   const generateSlug = (text: string) => {
@@ -401,9 +408,15 @@ export default function TripsClient({ initialTrips, isMockData }: TripsClientPro
       return
     }
 
+    const cleanedSlug = generateSlug(formValues.slug)
+    if (!cleanedSlug) {
+      toast.error('Slug tidak boleh kosong dan harus berisi karakter alfanumerik / tanda hubung')
+      return
+    }
+
     const submissionData = {
       title: formValues.title,
-      slug: formValues.slug,
+      slug: cleanedSlug,
       destination: formValues.destination,
       duration: formValues.duration,
       price: Number(formValues.price),
@@ -722,7 +735,7 @@ export default function TripsClient({ initialTrips, isMockData }: TripsClientPro
                     <Input
                       id="slug"
                       value={formValues.slug}
-                      onChange={(e) => setFormValues((prev) => ({ ...prev, slug: generateSlug(e.target.value) }))}
+                      onChange={(e) => setFormValues((prev) => ({ ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') }))}
                       placeholder="Contoh: open-trip-labuan-bajo-phinisi"
                       required
                     />

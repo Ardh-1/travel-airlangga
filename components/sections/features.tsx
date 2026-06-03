@@ -42,10 +42,10 @@ export function FeaturesSection() {
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-            Why Choose Us
+            Mengapa Memilih Kami
           </span>
           <h2 className="font-serif font-bold text-3xl md:text-4xl text-foreground mb-4 text-balance">
-            Mengapa Memilih Airlangga Travel?
+            Why Choose Airlangga Travel?
           </h2>
           <p className="text-muted-foreground leading-relaxed">
             Kami berkomitmen memberikan pengalaman perjalanan terbaik dengan layanan berkualitas tinggi

@@ -148,14 +148,6 @@ export function Footer() {
           <p className="text-background/50 text-sm">
             &copy; {new Date().getFullYear()} Airlangga Travel. All rights reserved.
           </p>
-          <div className="flex items-center gap-6 text-sm">
-            <Link href="/privacy" className="text-background/50 hover:text-primary transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-background/50 hover:text-primary transition-colors">
-              Terms of Service
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

@@ -6,6 +6,7 @@ import { Clock, Users, MapPin, Plane, Ship, Bus } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { Trip } from '@/lib/types'
+import { getOptimizedUnsplashUrl } from '@/lib/utils'
 
 interface TripCardProps {
   trip: Trip
@@ -56,10 +57,11 @@ export function TripCard({ trip, index = 0 }: TripCardProps) {
       {/* Image */}
       <div className="relative aspect-[3/4] flex-shrink-0 overflow-hidden">
         <Image
-          src={trip.image}
+          src={getOptimizedUnsplashUrl(trip.image, 600, 75)}
           alt={trip.title}
           fill
           className="object-cover group-hover:scale-110 transition-transform duration-500"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
 

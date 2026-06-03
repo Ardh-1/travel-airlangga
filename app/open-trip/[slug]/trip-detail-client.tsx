@@ -154,6 +154,7 @@ export default function TripDetailPageClient({ trip }: TripDetailPageClientProps
                     fill
                     className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
                     priority
+                    sizes="(max-width: 768px) 100vw, 700px"
                   />
                   {/* Zoom Hover Overlay */}
                   <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -181,6 +182,7 @@ export default function TripDetailPageClient({ trip }: TripDetailPageClientProps
                           alt={`${trip.title} ${index + 1}`}
                           fill
                           className="object-cover"
+                          sizes="96px"
                         />
                       </button>
                     ))}
@@ -424,6 +426,7 @@ export default function TripDetailPageClient({ trip }: TripDetailPageClientProps
                   fill
                   className="object-contain"
                   priority
+                  sizes="100vw"
                 />
               </div>
 

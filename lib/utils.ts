@@ -34,3 +34,20 @@ export function getYouTubeEmbedUrl(url: string | null | undefined): string {
 
   return cleanUrl;
 }
+
+export function getOptimizedUnsplashUrl(url: string | null | undefined, width: number = 600, quality: number = 75): string {
+  if (!url) return ''
+  const cleanUrl = url.trim()
+  if (!cleanUrl.includes('images.unsplash.com')) return cleanUrl
+  try {
+    const urlObj = new URL(cleanUrl)
+    urlObj.searchParams.set('w', width.toString())
+    urlObj.searchParams.set('q', quality.toString())
+    urlObj.searchParams.set('auto', 'format')
+    urlObj.searchParams.set('fit', 'crop')
+    return urlObj.toString()
+  } catch (e) {
+    return cleanUrl
+  }
+}
+

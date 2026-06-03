@@ -172,11 +172,13 @@ model Testimonial {
 }
 
 model GalleryItem {
-  id        String   @id @default(uuid())
-  location  String
-  image     String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(uuid())
+  location    String
+  image       String
+  showOnHome  Boolean  @default(true) @map("show_on_home")
+  showOnAbout Boolean  @default(false) @map("show_on_about")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("gallery_items")
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import type { GalleryItem } from '@/lib/types'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -14,6 +15,7 @@ import {
   Users
 } from 'lucide-react'
 import { OurServicesSection } from '@/components/sections/our-services'
+import { getOptimizedUnsplashUrl } from '@/lib/utils'
 import {
   Carousel,
   CarouselContent,
@@ -99,114 +101,148 @@ const teamMembers = [
 
 // 2. Data Logo Klien (Foto Representatif Korporasi/Instansi)
 const clientLogosRow1 = [
-  { name: 'Nusantara Tech', image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Alpha Minerals', image: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Borneo Agro', image: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Astra Group', image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Pacific Logis', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Summit Capital', image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=200&h=80&q=80' },
+  '/images/clients/1.webp',
+  '/images/clients/2.webp',
+  '/images/clients/3.webp',
+  '/images/clients/4.webp',
+  '/images/clients/5.webp',
+  '/images/clients/6.webp',
+  '/images/clients/7.webp',
+  '/images/clients/8.webp',
+  '/images/clients/9.webp',
+  '/images/clients/10.webp',
+  '/images/clients/11.webp',
+  '/images/clients/12.webp',
+  '/images/clients/13.webp',
+  '/images/clients/14.webp',
+  '/images/clients/15.webp',
+  '/images/clients/16.webp'
 ]
 
 const clientLogosRow2 = [
-  { name: 'Khatulistiwa', image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Equator Air', image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Pertiwi Outing', image: 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Global Energy', image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Nusa Ventures', image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'BCA Syariah', image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=200&h=80&q=80' },
+  '/images/clients/17.webp',
+  '/images/clients/18.webp',
+  '/images/clients/19.webp',
+  '/images/clients/20.webp',
+  '/images/clients/21.webp',
+  '/images/clients/22.webp',
+  '/images/clients/23.webp',
+  '/images/clients/24.webp',
+  '/images/clients/25.webp',
+  '/images/clients/26.webp',
+  '/images/clients/27.webp',
+  '/images/clients/28.webp',
+  '/images/clients/29.webp',
+  '/images/clients/30.webp',
+  '/images/clients/31.webp',
+  '/images/clients/32.webp'
 ]
 
 const clientLogosRow3 = [
-  { name: 'Java Hospitality', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Telkom Persada', image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Nusantara Green', image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Pertamina Corp', image: 'https://images.unsplash.com/photo-1610490824276-ac07e240c28a?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'BUMN Lestari', image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=200&h=80&q=80' },
-  { name: 'Oceanic Cruise', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=200&h=80&q=80' },
+  '/images/clients/33.webp',
+  '/images/clients/34.webp',
+  '/images/clients/35.webp',
+  '/images/clients/36.webp',
+  '/images/clients/37.webp',
+  '/images/clients/38.webp',
+  '/images/clients/39.webp',
+  '/images/clients/40.webp',
+  '/images/clients/41.webp',
+  '/images/clients/42.webp',
+  '/images/clients/43.webp',
+  '/images/clients/44.webp',
+  '/images/clients/45.webp',
+  '/images/clients/46.webp',
+  '/images/clients/47.webp',
+  '/images/clients/48.webp',
+  '/images/clients/49.webp'
 ]
 
 // 3. Data Galeri Foto Fotografer
-const photographerPhotos = [
+const photographerPhotos: GalleryItem[] = [
   {
     id: 'photo-1',
-    title: 'Keemasan Bromo',
     location: 'Taman Nasional Bromo Tengger Semeru, Jatim',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+    showOnAbout: true
   },
   {
     id: 'photo-2',
-    title: 'Surga Karst Raja Ampat',
     location: 'Piaynemo, Raja Ampat, Papua Barat',
-    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
+    showOnAbout: true
   },
   {
     id: 'photo-3',
-    title: 'Tari Kecak Uluwatu',
     location: 'Pura Luhur Uluwatu, Bali',
-    image: 'https://images.unsplash.com/photo-1542044896530-05d85be9b11a?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1542044896530-05d85be9b11a?auto=format&fit=crop&w=1200&q=80',
+    showOnAbout: true
   },
   {
     id: 'photo-4',
-    title: 'Gradasi Air Komodo',
     location: 'Pulau Padar, Labuan Bajo, NTT',
-    image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=1200&q=80',
+    showOnAbout: true
   },
   {
     id: 'photo-5',
-    title: 'Kabut Lembah Dieng',
     location: 'Dataran Tinggi Dieng, Jawa Tengah',
-    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80',
+    showOnAbout: true
   },
   {
     id: 'photo-6',
-    title: 'Ayunan Ubud Tradisional',
     location: 'Tegalalang Rice Terraces, Bali',
-    image: 'https://images.unsplash.com/photo-1552608494-18ba4c799d6a?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1552608494-18ba4c799d6a?auto=format&fit=crop&w=1200&q=80',
+    showOnAbout: true
   },
   {
     id: 'photo-7',
-    title: 'Terumbu Karang Bunaken',
     location: 'Taman Nasional Bunaken, Sulawesi Utara',
-    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80',
+    showOnAbout: true
   },
   {
     id: 'photo-8',
-    title: 'Kelokan Sungai Kapuas Aerial',
     location: 'Sungai Kapuas, Kalimantan Barat',
-    image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80',
+    showOnAbout: true
   }
 ]
 
-export function AboutClient() {
-  const [activePhoto, setActivePhoto] = useState<typeof photographerPhotos[0] | null>(null)
+export interface AboutClientProps {
+  initialItems?: GalleryItem[]
+}
+
+export function AboutClient({ initialItems }: AboutClientProps) {
+  const items = (initialItems && initialItems.length > 0 ? initialItems : photographerPhotos)
+    .filter(item => item.showOnAbout === true)
+  const [activePhoto, setActivePhoto] = useState<GalleryItem | null>(null)
 
   // Helper untuk merender logo foto klien secara identik
-  const renderLogoItem = (logo: { name: string; image: string }, idx: number) => (
+  const renderLogoItem = (logo: string, idx: number) => (
     <div
-      key={`${logo.name}-${idx}`}
-      className="flex items-center gap-3 bg-card border border-border/40 px-4 py-2 rounded-2xl group hover:border-primary/30 transition-all duration-300 shadow-sm flex-shrink-0 cursor-pointer overflow-hidden"
+      key={`${logo}-${idx}`}
+      className="flex items-center justify-center bg-card border border-border/40 p-2.5 rounded-2xl group hover:border-primary/30 transition-all duration-300 shadow-sm flex-shrink-0 cursor-pointer overflow-hidden w-28 h-14"
     >
-      <div className="relative w-16 h-8 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+      <div className="relative w-full h-full">
         <Image
-          src={logo.image}
-          alt={logo.name}
+          src={logo}
+          alt="Client Logo"
           fill
-          sizes="80px"
-          className="object-cover opacity-65 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500"
+          sizes="120px"
+          className="object-contain transition-all duration-300"
         />
       </div>
-      <span className="text-xs font-semibold tracking-wide text-muted-foreground/60 group-hover:text-foreground transition-colors duration-300">
-        {logo.name}
-      </span>
     </div>
   )
 
   return (
     <div className="flex flex-col bg-background text-foreground overflow-hidden">
 
-      {/* ================= HERO SECTION ================= */}
+      {/* Hero */}
       <section className="relative pt-32 pb-16 bg-secondary/30 overflow-hidden">
-        <div className="absolute inset-0 opacity-5 pointer-events-none -z-10">
+        <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent rounded-full blur-3xl animate-pulse" />
         </div>
@@ -221,7 +257,7 @@ export function AboutClient() {
               Eksplorasi Tanpa Batas
             </span>
             <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground text-balance">
-              Menghubungkan Anda dengan Keindahan Nusantara
+              Connecting You with the Beauty of the Archipelago
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
               Airlangga Travel lahir dari kecintaan yang mendalam pada petualangan. Kami berkomitmen untuk menghadirkan pengalaman perjalanan premium yang berkesan bagi setiap penjelajah dunia.
@@ -230,17 +266,17 @@ export function AboutClient() {
         </div>
       </section>
 
-      {/* ================= MEET OUR TEAM ================= */}
+      {/* Meet Our Team */}
       <section className="py-24 bg-card/40 border-y border-border/50 relative">
         <div className="container mx-auto px-4">
 
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-              Meet Our Team
+              Tim Kami
             </span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground">
-              Para Punggawa Petualangan
+              The Masters of Adventure
             </h2>
             <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
               Tim profesional kami selalu siap mendesain, mendampingi, dan mendokumentasikan perjalanan impian terbaik Anda.
@@ -268,6 +304,7 @@ export function AboutClient() {
                           fill
                           sizes="(max-width: 768px) 100vw, 330px"
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          priority={index < 4}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-end p-6">
                           {/* Social Icon on Hover */}
@@ -291,15 +328,18 @@ export function AboutClient() {
         </div>
       </section>
 
-      {/* ================= OUR SERVICES (REUSED SECTION) ================= */}
+      {/* Our Services */}
       <OurServicesSection />
 
-      {/* ================= OUR CLIENTS (CONTINUOUS SCROLL) ================= */}
+      {/* Our Clients */}
       <section className="py-20 bg-card/30 border-y border-border/40 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 mb-12">
-          <div className="text-center max-w-xl mx-auto space-y-2">
-            <h2 className="text-2xl md:text-3.5xl font-serif font-bold text-foreground">
-              Dipercaya oleh Korporasi & Instansi
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
+              Klien Kami
+            </span>
+            <h2 className="text-5xl md:text-4.5xl font-serif font-bold text-foreground">
+              Trusted by Corporations & Institutions
             </h2>
             <p className="text-muted-foreground text-xs md:text-sm">
               Kami bangga mendampingi perjalanan bisnis, gathering, dan outing instansi-instansi terkemuka di Indonesia.
@@ -317,14 +357,14 @@ export function AboutClient() {
           <div className="overflow-hidden flex w-full">
             <motion.div
               className="flex gap-6 w-max"
-              animate={{ x: ['-25%', '0%'] }}
+              animate={{ x: ['-50%', '0%'] }}
               transition={{
                 ease: 'linear',
-                duration: 25,
+                duration: 30,
                 repeat: Infinity
               }}
             >
-              {[...clientLogosRow1, ...clientLogosRow1, ...clientLogosRow1, ...clientLogosRow1].map((logo, idx) => renderLogoItem(logo, idx))}
+              {[...clientLogosRow1, ...clientLogosRow1].map((logo, idx) => renderLogoItem(logo, idx))}
             </motion.div>
           </div>
 
@@ -332,14 +372,14 @@ export function AboutClient() {
           <div className="overflow-hidden flex w-full">
             <motion.div
               className="flex gap-6 w-max"
-              animate={{ x: ['0%', '-25%'] }}
+              animate={{ x: ['0%', '-50%'] }}
               transition={{
                 ease: 'linear',
                 duration: 25,
                 repeat: Infinity
               }}
             >
-              {[...clientLogosRow2, ...clientLogosRow2, ...clientLogosRow2, ...clientLogosRow2].map((logo, idx) => renderLogoItem(logo, idx))}
+              {[...clientLogosRow2, ...clientLogosRow2].map((logo, idx) => renderLogoItem(logo, idx))}
             </motion.div>
           </div>
 
@@ -347,20 +387,20 @@ export function AboutClient() {
           <div className="overflow-hidden flex w-full">
             <motion.div
               className="flex gap-6 w-max"
-              animate={{ x: ['-25%', '0%'] }}
+              animate={{ x: ['-50%', '0%'] }}
               transition={{
                 ease: 'linear',
                 duration: 25,
                 repeat: Infinity
               }}
             >
-              {[...clientLogosRow3, ...clientLogosRow3, ...clientLogosRow3, ...clientLogosRow3].map((logo, idx) => renderLogoItem(logo, idx))}
+              {[...clientLogosRow3, ...clientLogosRow3].map((logo, idx) => renderLogoItem(logo, idx))}
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ================= PHOTOGRAPHER GALLERY ================= */}
+      {/* Photographer Gallery */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
 
@@ -370,7 +410,7 @@ export function AboutClient() {
               Fotografi Profesional
             </span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground">
-              Karya Lensa Fotografer
+              Photographers' Masterpieces
             </h2>
             <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
               Setiap jepretan adalah cerita petualangan otentik. Lihat bagaimana fotografer kami mendokumentasikan lanskap dan momen istimewa.
@@ -380,7 +420,7 @@ export function AboutClient() {
           {/* Grid Photo */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <AnimatePresence mode="popLayout">
-              {photographerPhotos.map((photo) => (
+              {items.map((photo) => (
                 <motion.div
                   key={photo.id}
                   layout
@@ -392,8 +432,8 @@ export function AboutClient() {
                   onClick={() => setActivePhoto(photo)}
                 >
                   <Image
-                    src={photo.image}
-                    alt={photo.title}
+                    src={getOptimizedUnsplashUrl(photo.image, 600, 75)}
+                    alt={photo.location}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -420,7 +460,7 @@ export function AboutClient() {
         </div>
       </section>
 
-      {/* ================= LIGHTBOX MODAL ================= */}
+      {/* Lightbox Modal */}
       <AnimatePresence>
         {activePhoto && (
           <motion.div
@@ -451,7 +491,7 @@ export function AboutClient() {
             >
               <Image
                 src={activePhoto.image}
-                alt={activePhoto.title}
+                alt={activePhoto.location}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1200px) 100vw, 1200px"

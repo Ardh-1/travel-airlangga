@@ -43,7 +43,7 @@ export default function ContactClient() {
               Hubungi Kami
             </span>
             <h1 className="font-serif font-bold text-4xl md:text-5xl text-foreground mb-4 text-balance">
-              Mulai Perjalanan Anda
+              Start Your Next Adventure
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
               Punya pertanyaan mengenai paket open trip, private trip kustom, rental armada mobil,

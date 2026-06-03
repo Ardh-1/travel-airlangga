@@ -73,5 +73,7 @@ export interface GalleryItem {
   id: string
   location: string
   image: string
+  showOnHome?: boolean
+  showOnAbout?: boolean
   createdAt?: string
 }

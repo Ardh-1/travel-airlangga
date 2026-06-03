@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ArrowRight, Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { getOptimizedUnsplashUrl } from '@/lib/utils'
 
 export function HeroSection() {
   const [mounted, setMounted] = useState(false)
@@ -16,12 +18,15 @@ export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Parallax Effect */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=1920&q=80')`,
-        }}
-      >
+      <div className="absolute inset-0">
+        <Image
+          src={getOptimizedUnsplashUrl("https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272", 1200, 75)}
+          alt="Gunung Bromo"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />

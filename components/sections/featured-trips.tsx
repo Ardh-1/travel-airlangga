@@ -17,7 +17,7 @@ export function FeaturedTripsSection({ initialTrips }: { initialTrips?: Trip[] }
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-            Open Trip
+            Paket Open Trip
           </span>
           <h2 className="font-serif font-bold text-3xl md:text-4xl text-foreground mb-4 text-balance">
             Featured Destinations
