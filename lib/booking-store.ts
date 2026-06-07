@@ -7,6 +7,7 @@ import type { Booking } from './types'
 interface BookingState {
   bookings: Booking[]
   addBooking: (booking: Booking) => void
+  removeBooking: (id: string) => void
   updateBookingStatus: (id: string, status: Booking['status']) => void
   getBookingById: (id: string) => Booking | undefined
 }
@@ -17,6 +18,10 @@ export const useBookingStore = create<BookingState>()(
       bookings: [],
       addBooking: (booking) =>
         set((state) => ({ bookings: [...state.bookings, booking] })),
+      removeBooking: (id) =>
+        set((state) => ({
+          bookings: state.bookings.filter((b) => b.id !== id),
+        })),
       updateBookingStatus: (id, status) =>
         set((state) => ({
           bookings: state.bookings.map((b) =>

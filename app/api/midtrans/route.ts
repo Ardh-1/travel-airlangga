@@ -179,9 +179,13 @@ export async function PUT(request: Request) {
         if (booking) {
           let resolvedStatus: 'pending' | 'dp_paid' | 'paid' | 'cancelled' = paymentStatus
           if (paymentStatus === 'paid') {
-            const depositPercentage = booking.trip?.depositPercentage ?? 100
-            if (depositPercentage < 100) {
-              resolvedStatus = 'dp_paid'
+            if (booking.status === 'dp_paid') {
+              resolvedStatus = 'paid'
+            } else {
+              const depositPercentage = booking.trip?.depositPercentage ?? 100
+              if (depositPercentage < 100) {
+                resolvedStatus = 'dp_paid'
+              }
             }
           }
 

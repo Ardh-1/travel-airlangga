@@ -3,7 +3,7 @@
 import { MessageCircle, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-const WHATSAPP_NUMBER = '6208111211143'
+const WHATSAPP_NUMBER = '628111211143'
 const WHATSAPP_MESSAGE = 'Halo Airlangga Travel, saya tertarik untuk booking trip'
 
 export function CTABannerSection() {

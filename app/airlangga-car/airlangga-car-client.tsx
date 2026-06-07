@@ -34,7 +34,7 @@ import {
 } from '@/components/ui/dialog'
 import type { Car } from '@/lib/types'
 
-const WHATSAPP_NUMBER = '6208111211143'
+const WHATSAPP_NUMBER = '628111211143'
 
 const bookingSchema = z.object({
   pickupLocation: z.string().min(3, 'Lokasi penjemputan minimal 3 karakter'),

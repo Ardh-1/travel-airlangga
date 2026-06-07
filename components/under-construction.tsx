@@ -27,7 +27,7 @@ export function UnderConstruction({ type }: UnderConstructionProps) {
       title: 'Halaman Kontak Sedang Kami Persiapkan',
       description: 'Kami sedang membangun cara yang lebih mudah bagi Anda untuk terhubung. Untuk saat ini, Anda bisa langsung menghubungi kami via WhatsApp atau Email untuk merencanakan trip Anda.',
       primaryBtnText: 'Hubungi via WhatsApp',
-      primaryBtnHref: 'https://wa.me/6208111211143?text=Halo%20Airlangga%20Travel,%20saya%20ingin%20berkonsultasi%20mengenai%20rencana%20trip.',
+      primaryBtnHref: 'https://wa.me/628111211143?text=Halo%20Airlangga%20Travel,%20saya%20ingin%20berkonsultasi%20mengenai%20rencana%20trip.',
       illustration: 'globe',
     },
     404: {

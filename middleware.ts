@@ -83,10 +83,10 @@ export default auth((req) => {
 
   // Get Client IP Address safely with reverse proxy, CDN, and fallback support
   const ip = req.headers.get('cf-connecting-ip') ||
-             req.headers.get('x-real-ip') ||
-             req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
-             (req as any).ip ||
-             '127.0.0.1'
+    req.headers.get('x-real-ip') ||
+    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+    (req as any).ip ||
+    '127.0.0.1'
 
   // Periodically clean up cache to prevent memory exhaustion
   cleanExpiredRecords()
@@ -102,7 +102,7 @@ export default auth((req) => {
   } else if (isApiRoute) {
     limit = 30 // Public API abuse protection
   } else if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE') {
-    limit = 15 // Strict protection for form submissions / data writes
+    limit = 30 // Strict protection for form submissions / data writes
   }
 
   // Trigger rate limit check

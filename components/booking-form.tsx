@@ -32,7 +32,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import type { Trip, Booking } from '@/lib/types'
 import { useBookingStore, generateBookingCode } from '@/lib/booking-store'
-import { createBookingAction, updateBookingStatusAction, sendBookingEmailAction } from '@/app/actions/booking'
+import { createBookingAction, updateBookingStatusAction, sendBookingEmailAction, deleteBookingAction } from '@/app/actions/booking'
 
 // Extend Window interface for Midtrans Snap
 declare global {
@@ -95,6 +95,7 @@ export function BookingForm({ trip, onClose }: BookingFormProps) {
 
   const addBooking = useBookingStore((state) => state.addBooking)
   const updateBookingStatus = useBookingStore((state) => state.updateBookingStatus)
+  const removeBooking = useBookingStore((state) => state.removeBooking)
 
   const {
     register,
@@ -252,39 +253,42 @@ export function BookingForm({ trip, onClose }: BookingFormProps) {
             // Send success email with correct status
             sendEmailOnce(nextStatus)
           },
-          onPending: (result) => {
+          onPending: async (result) => {
             console.log('Payment pending:', result)
             activeTransactionRef.current.status = 'pending'
 
-            toast.info('Pembayaran dalam proses, silakan selesaikan pembayaran')
+            // Delete the booking from DB and store since we don't keep pending bookings
+            await deleteBookingAction(booking.id)
+            removeBooking(booking.id)
+
+            toast.info('Pembayaran dibatalkan atau tidak diselesaikan')
             setStep('form')
           },
-          onError: (result) => {
+          onError: async (result) => {
             console.error('Payment error:', result)
             activeTransactionRef.current.status = 'error'
+
+            // Delete the booking from DB and store
+            await deleteBookingAction(booking.id)
+            removeBooking(booking.id)
 
             toast.error('Pembayaran gagal, silakan coba lagi')
             setStep('form')
           },
-          onClose: () => {
+          onClose: async () => {
             console.log('Payment popup closed')
             const tx = activeTransactionRef.current
 
             // Check status that was set in callbacks
             if (tx.status === 'success') {
               // Paid successfully, step should already be 'success'
-              // No need to send email or update step
               return
             }
 
-            if (tx.status === 'pending') {
-              // They chose a payment method and closed the popup (to pay via ATM/GoPay/etc.)
-              toast.info('Selesaikan pembayaran Anda sesuai instruksi')
-              setStep('form')
-              return
-            }
+            // Delete the booking from DB and store
+            await deleteBookingAction(booking.id)
+            removeBooking(booking.id)
 
-            // Otherwise, they closed it without finishing (status is 'idle' or 'error')
             toast.info('Pembayaran dibatalkan')
             setStep('form')
           },
@@ -297,7 +301,7 @@ export function BookingForm({ trip, onClose }: BookingFormProps) {
         setIsProcessing(false)
       }
     },
-    [snapLoaded, updateBookingStatus, isPartialDeposit]
+    [snapLoaded, updateBookingStatus, removeBooking, isPartialDeposit]
   )
 
   const onSubmit = async (data: BookingFormData) => {

@@ -185,6 +185,11 @@ function TrackOrderContent() {
 
   const createMidtransTransaction = async (bookingData: Booking) => {
     try {
+      const depositPercentage = bookingData.depositPercentage ?? 100
+      const remainingAmount = bookingData.status === 'dp_paid'
+        ? bookingData.totalPrice * (1 - depositPercentage / 100)
+        : bookingData.totalPrice
+
       const response = await fetch('/api/midtrans', {
         method: 'POST',
         headers: {
@@ -192,11 +197,11 @@ function TrackOrderContent() {
         },
         body: JSON.stringify({
           orderId: bookingData.bookingCode,
-          grossAmount: bookingData.totalPrice,
+          grossAmount: remainingAmount,
           customerName: bookingData.customerName,
           email: bookingData.email,
           phone: bookingData.whatsapp,
-          tripTitle: bookingData.tripTitle,
+          tripTitle: `${bookingData.tripTitle} (Pelunasan)`,
           participants: bookingData.participants,
         }),
       })
@@ -229,7 +234,7 @@ function TrackOrderContent() {
       window.snap.pay(token, {
         onSuccess: async (result) => {
           console.log('Payment success:', result)
-          toast.success('Pembayaran berhasil!')
+          toast.success('Pembayaran pelunasan berhasil!')
 
           // Update DB
           await updateBookingStatusAction(booking.id, 'paid')
@@ -301,6 +306,8 @@ function TrackOrderContent() {
     switch (status) {
       case 'paid':
         return <Badge className="bg-success hover:bg-success text-success-foreground px-3 py-1 text-sm rounded-full">Lunas</Badge>
+      case 'dp_paid':
+        return <Badge className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 text-sm rounded-full">DP Terbayar</Badge>
       case 'pending':
         return <Badge className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 text-sm rounded-full">Menunggu Pembayaran</Badge>
       case 'cancelled':
@@ -314,6 +321,8 @@ function TrackOrderContent() {
     switch (status) {
       case 'paid':
         return <CheckCircle2 className="w-16 h-16 text-success mx-auto" />
+      case 'dp_paid':
+        return <Clock className="w-16 h-16 text-blue-500 mx-auto animate-pulse" />
       case 'pending':
         return <Clock className="w-16 h-16 text-amber-500 mx-auto animate-pulse" />
       case 'cancelled':
@@ -420,7 +429,7 @@ function TrackOrderContent() {
               <CardContent className="p-8 text-center">
                 {getStatusIcon(booking.status)}
                 <h2 className="text-2xl font-bold mt-4 mb-2 text-foreground">
-                  Status: {booking.status === 'paid' ? 'Pembayaran Lunas' : booking.status === 'cancelled' ? 'Pemesanan Dibatalkan' : 'Menunggu Pembayaran'}
+                  Status: {booking.status === 'paid' ? 'Pembayaran Lunas' : booking.status === 'dp_paid' ? 'DP Terbayar (Belum Lunas)' : booking.status === 'cancelled' ? 'Pemesanan Dibatalkan' : 'Menunggu Pembayaran'}
                 </h2>
                 <div className="flex items-center justify-center gap-2 mb-6">
                   <span className="font-mono text-muted-foreground text-sm">Kode Booking:</span>
@@ -434,23 +443,23 @@ function TrackOrderContent() {
                   </button>
                 </div>
 
-                {booking.status === 'pending' && (
+                {booking.status === 'dp_paid' && (
                   <div className="p-5 bg-amber-500/5 border border-amber-500/20 rounded-xl max-w-md mx-auto space-y-4">
                     <div>
-                      <p className="text-sm text-amber-600 font-medium mb-1">Batas Waktu Pembayaran</p>
+                      <p className="text-sm text-amber-600 font-medium mb-1">Pelunasan Pembayaran</p>
                       <p className="text-base font-bold text-foreground">
-                        {format(new Date(booking.paymentDeadline), 'EEEE, d MMMM yyyy HH:mm', { locale: id })}
+                        Sisa Pelunasan: {formatPrice(booking.totalPrice * (1 - (booking.depositPercentage ?? 100) / 100))}
                       </p>
                       <p className="text-xs text-muted-foreground mt-2">
-                        Silakan selesaikan pembayaran sebelum batas waktu agar pemesanan tidak dibatalkan otomatis.
+                        Pemesanan Anda telah tercatat dengan pembayaran uang muka (DP). Silakan lakukan pelunasan pembayaran sisa sebelum tanggal keberangkatan.
                       </p>
                     </div>
 
-                    <div className="pt-3 border-t border-amber-500/10">
+                    <div className="pt-3 border-t border-amber-500/10 space-y-3">
                       <Button
                         onClick={handlePayNow}
                         disabled={isProcessingPayment}
-                        className="w-full h-12 bg-primary hover:bg-primary/95 text-primary-foreground font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 group relative overflow-hidden"
+                        className="w-full h-12 bg-primary hover:bg-primary/95 text-primary-foreground font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 group relative overflow-hidden cursor-pointer"
                       >
                         {isProcessingPayment ? (
                           <>
@@ -465,10 +474,26 @@ function TrackOrderContent() {
                         ) : (
                           <>
                             <CreditCard className="w-5 h-5 transition-transform group-hover:scale-110" />
-                            Bayar Sekarang
+                            Bayar Pelunasan Sekarang
                           </>
                         )}
                       </Button>
+
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full h-12 border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-full font-semibold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer bg-transparent"
+                      >
+                        <a
+                          href={`https://wa.me/628111211143?text=${encodeURIComponent(`Halo admin Airlangga Travel, saya ingin konfirmasi/bertanya mengenai pelunasan pembayaran untuk kode booking ${booking.bookingCode}`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Phone className="w-4 h-4" />
+                          Hubungi Admin via WhatsApp
+                        </a>
+                      </Button>
+
                       <div className="flex items-center justify-center gap-1 mt-2 text-[10px] text-muted-foreground">
                         <span>Didukung oleh</span>
                         <span className="font-semibold text-[#00AA13]">Midtrans</span>
@@ -583,10 +608,10 @@ function TrackOrderContent() {
             </div>
 
             {/* Action Buttons */}
-            {booking.status === 'pending' && (
+            {booking.status === 'dp_paid' && (
               <div className="p-6 border border-border/50 rounded-2xl bg-secondary text-center space-y-4">
                 <p className="font-medium text-foreground max-w-lg mx-auto">
-                  Silakan selesaikan pembayaran Anda di atas, atau hubungi layanan pelanggan kami jika Anda membutuhkan bantuan atau ingin konfirmasi manual.
+                  Silakan selesaikan pelunasan pembayaran Anda di atas, atau hubungi layanan pelanggan kami jika Anda membutuhkan bantuan atau ingin konfirmasi manual.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-3">
                   <Button
@@ -595,11 +620,11 @@ function TrackOrderContent() {
                     className="bg-background border-border hover:bg-muted text-foreground rounded-full px-8 h-12"
                   >
                     <a
-                      href={`https://wa.me/6208111211143?text=${encodeURIComponent(`Halo Airlangga Travel, saya ingin konfirmasi pembayaran untuk kode booking ${booking.bookingCode}`)}`}
+                      href={`https://wa.me/628111211143?text=${encodeURIComponent(`Halo Airlangga Travel, saya ingin konfirmasi pelunasan pembayaran untuk kode booking ${booking.bookingCode}`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Konfirmasi via WhatsApp
+                      Konfirmasi Pelunasan via WhatsApp
                     </a>
                   </Button>
                 </div>

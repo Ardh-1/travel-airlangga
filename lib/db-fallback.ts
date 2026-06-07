@@ -215,9 +215,10 @@ export async function getBookingByCode(bookingCode: string): Promise<Booking | n
         participants: 2,
         departureDate: new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0],
         totalPrice: 3500000,
-        status: 'pending',
+        status: 'dp_paid',
         paymentDeadline: new Date(Date.now() + 86400000).toISOString(),
         createdAt: new Date().toISOString(),
+        depositPercentage: 50,
       }
     }
     return null
@@ -248,6 +249,7 @@ export async function getBookingByCode(bookingCode: string): Promise<Booking | n
       status: dbBooking.status as 'pending' | 'paid' | 'cancelled',
       paymentDeadline: dbBooking.paymentDeadline.toISOString(),
       createdAt: dbBooking.createdAt.toISOString(),
+      depositPercentage: dbBooking.trip?.depositPercentage ?? 100,
     }
   } catch (error) {
     console.error(`Error fetching booking by code ${bookingCode}:`, error)

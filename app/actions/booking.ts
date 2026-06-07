@@ -62,3 +62,20 @@ export async function getBookingByCodeAction(bookingCode: string) {
   }
 }
 
+export async function deleteBookingAction(bookingId: string) {
+  if (!process.env.DATABASE_URL) {
+    return { success: true }
+  }
+  try {
+    await prisma.booking.delete({
+      where: { id: bookingId },
+    })
+    revalidatePath('/admin')
+    revalidatePath('/admin/bookings')
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to delete booking action:', error)
+    return { success: false, error: 'Gagal menghapus pemesanan' }
+  }
+}
+

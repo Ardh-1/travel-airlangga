@@ -44,6 +44,7 @@ export interface Booking {
   bookingCode: string
   createdAt: string
   paymentDeadline: string
+  depositPercentage?: number
 }
 
 export interface Car {
