@@ -35,6 +35,7 @@ export async function sendBookingConfirmationEmail(booking: Booking) {
   }
 
   const trackLink = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/track-order?code=${booking.bookingCode}`
+
   const isDpPaid = booking.status === 'dp_paid'
   const depositAmount = booking.totalPrice * (depositPercentage / 100)
   const remainingAmount = booking.totalPrice - depositAmount
@@ -48,175 +49,148 @@ export async function sendBookingConfirmationEmail(booking: Booking) {
       <title>Konfirmasi Pemesanan Airlangga Travel</title>
       <style>
         body {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-          background-color: #f8fafc;
-          color: #334155;
+          font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          background-color: #FFFDF5;
+          color: #1A1A1A;
           margin: 0;
           padding: 0;
+          -webkit-font-smoothing: antialiased;
         }
         .container {
           max-width: 600px;
-          margin: 40px auto;
-          background-color: #ffffff;
-          border-radius: 20px;
-          overflow: hidden;
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-          border: 1px solid #e2e8f0;
+          margin: 0 auto;
+          padding: 20px;
         }
         .header {
           text-align: center;
-          padding: 40px 20px;
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+          padding: 30px 20px;
+          background-color: #1A1A1A;
+          border-top-left-radius: 16px;
+          border-top-right-radius: 16px;
         }
         .header h1 {
-          color: #f59e0b;
+          color: #F4B400;
           margin: 0;
-          font-size: 26px;
-          letter-spacing: 1.5px;
-          font-weight: 800;
+          font-size: 24px;
+          letter-spacing: 1px;
+          font-weight: 700;
         }
         .header p {
-          color: #94a3b8;
-          margin: 8px 0 0 0;
-          font-size: 13px;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-        }
-        .status-banner {
-          background-color: #f0fdf4;
-          border-left: 4px solid #10b981;
-          padding: 14px 20px;
-          margin: 24px 30px 0 30px;
-          border-radius: 8px;
-        }
-        .status-text {
+          color: #FFFDF5;
+          margin: 5px 0 0 0;
           font-size: 14px;
-          color: #166534;
-          font-weight: 600;
+          opacity: 0.8;
         }
         .content {
-          padding: 30px 30px 40px 30px;
+          background-color: #FFFFFF;
+          padding: 30px 25px;
+          border-bottom-left-radius: 16px;
+          border-bottom-right-radius: 16px;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+          border: 1px solid #E5E5E5;
+          border-top: none;
         }
         .greeting {
-          font-size: 15px;
-          line-height: 1.6;
-          margin-bottom: 24px;
-          color: #475569;
+          font-size: 16px;
+          line-height: 1.5;
+          margin-bottom: 25px;
         }
         .booking-card {
-          background-color: #f8fafc;
-          border: 1px solid #e2e8f0;
-          border-radius: 14px;
+          background-color: #FFFDF5;
+          border: 1px solid #FFE066;
+          border-radius: 12px;
           padding: 20px;
-          margin-bottom: 24px;
+          margin-bottom: 25px;
         }
         .booking-code-label {
-          font-size: 10px;
+          font-size: 11px;
           text-transform: uppercase;
-          color: #64748b;
-          font-weight: 700;
+          color: #6B6B6B;
+          font-weight: 600;
           letter-spacing: 0.5px;
         }
         .booking-code {
-          font-size: 22px;
-          font-family: 'Courier New', Courier, monospace;
+          font-size: 20px;
+          font-family: monospace;
           font-weight: bold;
-          color: #0284c7;
-          margin-top: 4px;
-          margin-bottom: 16px;
+          color: #D4A017;
+          margin-top: 2px;
+          margin-bottom: 15px;
         }
         .info-row {
           display: flex;
           justify-content: space-between;
-          padding: 10px 0;
-          border-bottom: 1px dashed #e2e8f0;
+          padding: 8px 0;
+          border-bottom: 1px solid #E5E5E5;
           font-size: 14px;
         }
-        .info-row:last-of-type {
+        .info-row:last-child {
           border-bottom: none;
+          padding-bottom: 0;
         }
         .info-label {
-          color: #64748b;
+          color: #6B6B6B;
         }
         .info-value {
           font-weight: 600;
-          color: #0f172a;
           text-align: right;
-        }
-        .price-section {
-          margin-top: 15px;
-          padding-top: 15px;
-          border-top: 2px solid #e2e8f0;
         }
         .price-row {
           display: flex;
           justify-content: space-between;
-          padding: 6px 0;
-          font-size: 14px;
+          padding: 15px 0 0 0;
+          margin-top: 15px;
+          border-top: 2px dashed #E5E5E5;
+          font-size: 16px;
         }
-        .price-row.total {
-          padding-top: 10px;
-          font-size: 17px;
+        .price-row.extra {
+          border-top: none;
+          padding-top: 5px;
+          margin-top: 0;
+        }
+        .price-label {
           font-weight: 700;
         }
-        .price-row.total .price-value {
-          color: #0f172a;
-          font-size: 18px;
+        .price-value {
           font-weight: 800;
-        }
-        .price-row.highlighted {
-          color: #f59e0b;
-          font-weight: 700;
-        }
-        .price-row.success {
-          color: #10b981;
-          font-weight: 700;
+          color: #F4B400;
+          font-size: 18px;
         }
         .btn-container {
           text-align: center;
           margin: 30px 0;
         }
         .btn {
-          background-color: #f59e0b;
-          color: #0f172a !important;
+          background-color: #F4B400;
+          color: #FFFFFF !important;
           text-decoration: none;
-          padding: 14px 32px;
+          padding: 12px 30px;
           border-radius: 9999px;
           font-weight: 700;
           font-size: 14px;
           display: inline-block;
-          box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+          box-shadow: 0 4px 6px rgba(244, 180, 0, 0.2);
+          transition: background-color 0.2s;
         }
         .instructions {
-          font-size: 13.5px;
-          color: #475569;
-          line-height: 1.6;
-          padding: 20px;
-          background-color: #fcfcfd;
-          border-left: 4px solid #f59e0b;
-          border-radius: 0 10px 10px 0;
-          border-top: 1px solid #edf2f7;
-          border-right: 1px solid #edf2f7;
-          border-bottom: 1px solid #edf2f7;
-        }
-        .instructions strong {
-          color: #0f172a;
-          display: inline-block;
-          margin-bottom: 6px;
+          font-size: 13px;
+          color: #6B6B6B;
+          line-height: 1.5;
+          padding: 15px;
+          background-color: #F9F9F9;
+          border-radius: 8px;
+          margin-top: 25px;
         }
         .footer {
           text-align: center;
-          padding: 30px 20px;
-          background-color: #f8fafc;
-          border-top: 1px solid #e2e8f0;
+          padding: 25px 20px;
           font-size: 12px;
-          color: #64748b;
-          line-height: 1.6;
+          color: #6B6B6B;
+          line-height: 1.5;
         }
         .footer a {
-          color: #f59e0b;
+          color: #F4B400;
           text-decoration: none;
-          font-weight: 600;
         }
       </style>
     </head>
@@ -226,17 +200,10 @@ export async function sendBookingConfirmationEmail(booking: Booking) {
           <h1>AIRLANGGA TRAVEL</h1>
           <p>Eksplorasi Dunia dengan Kenyamanan Utama</p>
         </div>
-        
-        <div class="status-banner">
-          <div class="status-text">
-            ✓ Booking Dikonfirmasi — Pembayaran ${isDpPaid ? 'Uang Muka (DP) Terbayar' : 'Lunas'}
-          </div>
-        </div>
-
         <div class="content">
           <div class="greeting">
             Halo <strong>${booking.customerName}</strong>,<br><br>
-            Terima kasih telah memesan perjalanan bersama Airlangga Travel. Reservasi Anda telah berhasil dikonfirmasi dengan rincian pembayaran di bawah ini.
+            Terima kasih telah memesan perjalanan bersama kami. Pemesanan Anda telah berhasil dibuat dengan status <strong>${booking.status === 'paid' ? 'LUNAS' : booking.status === 'dp_paid' ? 'DP TERBAYAR' : 'BATAL'}</strong>. Berikut adalah rincian reservasi Anda:
           </div>
 
           <div class="booking-card">
@@ -256,32 +223,33 @@ export async function sendBookingConfirmationEmail(booking: Booking) {
               <span class="info-value">${booking.participants} Orang</span>
             </div>
             <div class="info-row">
+              <span class="info-label">Email</span>
+              <span class="info-value">${booking.email}</span>
+            </div>
+            <div class="info-row">
               <span class="info-label">No. WhatsApp</span>
               <span class="info-value">${booking.whatsapp}</span>
             </div>
 
-            <div class="price-section">
+            ${isDpPaid ? `
               <div class="price-row">
-                <span class="info-label">Total Harga Paket</span>
-                <span class="info-value">${formatPrice(booking.totalPrice)}</span>
+                <span class="price-label">Total Harga Paket</span>
+                <span class="price-value">${formatPrice(booking.totalPrice)}</span>
               </div>
-              
-              ${isDpPaid ? `
-                <div class="price-row success">
-                  <span class="info-label">Uang Muka Terbayar (DP ${depositPercentage}%)</span>
-                  <span class="info-value">${formatPrice(depositAmount)}</span>
-                </div>
-                <div class="price-row total highlighted">
-                  <span class="price-label">Sisa Pelunasan</span>
-                  <span class="price-value">${formatPrice(remainingAmount)}</span>
-                </div>
-              ` : `
-                <div class="price-row total success">
-                  <span class="price-label">Total Terbayar (Lunas)</span>
-                  <span class="price-value">${formatPrice(booking.totalPrice)}</span>
-                </div>
-              `}
-            </div>
+              <div class="price-row extra" style="color: #10B981;">
+                <span class="price-label" style="font-weight: normal;">Uang Muka Terbayar (DP ${depositPercentage}%)</span>
+                <span class="price-value" style="color: #10B981; font-size: 16px;">${formatPrice(depositAmount)}</span>
+              </div>
+              <div class="price-row extra" style="color: #D4A017; border-top: 1px dashed #E5E5E5; padding-top: 10px; margin-top: 5px;">
+                <span class="price-label">Sisa Pelunasan</span>
+                <span class="price-value" style="color: #D4A017;">${formatPrice(remainingAmount)}</span>
+              </div>
+            ` : `
+              <div class="price-row">
+                <span class="price-label">Total Pembayaran (Lunas)</span>
+                <span class="price-value">${formatPrice(booking.totalPrice)}</span>
+              </div>
+            `}
           </div>
 
           <div class="btn-container">
@@ -290,17 +258,16 @@ export async function sendBookingConfirmationEmail(booking: Booking) {
 
           ${isDpPaid ? `
             <div class="instructions">
-              <strong>Langkah Selanjutnya (Pembayaran Uang Muka):</strong><br>
-              Pembayaran Down Payment (DP) sebesar <strong>${depositPercentage}%</strong> telah kami terima. Silakan lakukan pelunasan sisa pembayaran sebesar <strong>${formatPrice(remainingAmount)}</strong> sebelum tanggal keberangkatan melalui halaman Lacak Pesanan di atas. Tim kami juga akan menghubungi Anda melalui WhatsApp untuk koordinasi perjalanan.
+              <strong>Langkah Selanjutnya:</strong><br>
+              Pembayaran uang muka (DP) sebesar <strong>${depositPercentage}%</strong> telah kami terima. Silakan lakukan pelunasan sisa pembayaran sebesar <strong>${formatPrice(remainingAmount)}</strong> sebelum tanggal keberangkatan melalui halaman Lacak Status Pesanan di atas. Tim Customer Service kami akan menghubungi Anda melalui WhatsApp ke nomor <strong>${booking.whatsapp}</strong> untuk koordinasi keberangkatan.
             </div>
           ` : `
             <div class="instructions">
-              <strong>Langkah Selanjutnya (Pembayaran Lunas):</strong><br>
-              Pemesanan Anda telah lunas sepenuhnya. Tim Customer Service kami akan segera menghubungi Anda melalui WhatsApp ke nomor <strong>${booking.whatsapp}</strong> untuk memberikan panduan detail perjalanan dan daftar perlengkapan yang perlu dipersiapkan.
+              <strong>Langkah Selanjutnya:</strong><br>
+              Pemesanan Anda telah lunas. Tim Customer Service kami akan segera menghubungi Anda melalui nomor WhatsApp <strong>${booking.whatsapp}</strong> untuk memberikan informasi teknis dan perlengkapan perjalanan yang perlu dipersiapkan.
             </div>
           `}
         </div>
-        
         <div class="footer">
           &copy; ${new Date().getFullYear()} Airlangga Travel. All rights reserved.<br>
           Butuh bantuan? Hubungi <a href="https://wa.me/628111211143">WhatsApp Customer Service</a> kami.

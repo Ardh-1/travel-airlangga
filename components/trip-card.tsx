@@ -72,6 +72,14 @@ export function TripCard({ trip, index = 0 }: TripCardProps) {
           </Badge>
         </div>
 
+        {(!trip.departureDates || trip.departureDates.length === 0) && (
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            <Badge className="bg-amber-500 text-white border-0 font-semibold uppercase tracking-wider">
+              Coming Soon
+            </Badge>
+          </div>
+        )}
+
         {/* Location */}
         <div className="absolute bottom-4 left-4 flex items-center gap-2 text-background">
           <MapPin className="w-4 h-4" />
@@ -115,12 +123,21 @@ export function TripCard({ trip, index = 0 }: TripCardProps) {
           </div>
 
           {/* CTA */}
-          <Button
-            asChild
-            className="w-full bg-primary hover:bg-primary-dark text-primary-foreground rounded-full"
-          >
-            <Link href={`/open-trip/${trip.slug}`}>Pesan Sekarang</Link>
-          </Button>
+          {(!trip.departureDates || trip.departureDates.length === 0) ? (
+            <Button
+              asChild
+              className="w-full bg-primary hover:bg-primary-dark text-primary-foreground rounded-full"
+            >
+              <Link href={`/open-trip/${trip.slug}`}>Coming Soon</Link>
+            </Button>
+          ) : (
+            <Button
+              asChild
+              className="w-full bg-primary hover:bg-primary-dark text-primary-foreground rounded-full"
+            >
+              <Link href={`/open-trip/${trip.slug}`}>Pesan Sekarang</Link>
+            </Button>
+          )}
         </div>
 
       </div>

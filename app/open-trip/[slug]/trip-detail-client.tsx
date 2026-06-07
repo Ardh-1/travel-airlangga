@@ -226,15 +226,19 @@ export default function TripDetailPageClient({ trip }: TripDetailPageClientProps
                     Jadwal Keberangkatan
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {trip.departureDates.map((date) => (
-                      <Badge
-                        key={date}
-                        variant="outline"
-                        className="border-primary/30 text-foreground"
-                      >
-                        {format(new Date(date), 'd MMM yyyy', { locale: id })}
-                      </Badge>
-                    ))}
+                    {(!trip.departureDates || trip.departureDates.length === 0) ? (
+                      <span className="text-sm text-muted-foreground italic">Segera Hadir (Coming Soon)</span>
+                    ) : (
+                      trip.departureDates.map((date) => (
+                        <Badge
+                          key={date}
+                          variant="outline"
+                          className="border-primary/30 text-foreground"
+                        >
+                          {format(new Date(date), 'd MMM yyyy', { locale: id })}
+                        </Badge>
+                      ))
+                    )}
                   </div>
                 </div>
 
@@ -389,7 +393,33 @@ export default function TripDetailPageClient({ trip }: TripDetailPageClientProps
                   )}
                 </div>
 
-                <BookingForm trip={trip} />
+                {(!trip.departureDates || trip.departureDates.length === 0) ? (
+                  <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-6 text-center space-y-4">
+                    <div className="inline-block px-3 py-1 bg-amber-500 text-white rounded-full text-xs font-semibold uppercase tracking-wider">
+                      Coming Soon
+                    </div>
+                    <h3 className="font-serif font-semibold text-lg text-foreground">
+                      Jadwal Belum Tersedia
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Jadwal keberangkatan untuk paket perjalanan ini sedang dipersiapkan. Hubungi admin kami untuk menanyakan perkiraan tanggal keberangkatan.
+                    </p>
+                    <Button
+                      asChild
+                      className="w-full h-12 bg-primary hover:bg-primary-dark text-primary-foreground rounded-full font-medium"
+                    >
+                      <a
+                        href={`https://wa.me/628111211143?text=${encodeURIComponent(`Halo admin Airlangga Travel, saya tertarik dengan paket trip "${trip.title}" yang berstatus Coming Soon. Kapan jadwal keberangkatan terbarunya dirilis?`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Tanya via WhatsApp
+                      </a>
+                    </Button>
+                  </div>
+                ) : (
+                  <BookingForm trip={trip} />
+                )}
               </div>
             </div>
           </div>

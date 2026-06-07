@@ -18,6 +18,8 @@ interface BookingType {
   paymentDeadline: Date
   createdAt: Date
   updatedAt: Date
+  trip?: { title: string } | null
+  car?: { name: string } | null
 }
 
 export const dynamic = 'force-dynamic'
@@ -35,6 +37,7 @@ const mockBookings = [
     status: 'paid',
     participants: 1,
     createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
+    tripTitle: 'Open Trip Labuan Bajo Premium',
   },
   {
     id: 'mock-2',
@@ -48,6 +51,7 @@ const mockBookings = [
     status: 'dp_paid',
     participants: 2, // 2 days
     createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
+    tripTitle: 'Toyota Avanza',
   },
   {
     id: 'mock-3',
@@ -61,6 +65,7 @@ const mockBookings = [
     status: 'cancelled',
     participants: 2,
     createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
+    tripTitle: 'Open Trip Gunung Bromo',
   },
 ].filter(b => b.status === 'dp_paid' || b.status === 'paid')
 
@@ -75,6 +80,10 @@ export default async function BookingsPage() {
         status: {
           in: ['dp_paid', 'paid'],
         },
+      },
+      include: {
+        trip: true,
+        car: true,
       },
       orderBy: { createdAt: 'desc' },
     })
@@ -91,6 +100,7 @@ export default async function BookingsPage() {
       status: b.status,
       participants: b.bookingType === 'trip' ? b.participants : b.rentalDays,
       createdAt: b.createdAt.toISOString(),
+      tripTitle: b.trip?.title || b.car?.name || (b.bookingType === 'trip' ? 'Open Trip' : 'Rental Mobil'),
     }))
 
     return <BookingsClient initialBookings={formattedBookings} isMockData={false} />

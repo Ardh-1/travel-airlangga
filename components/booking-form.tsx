@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -15,8 +16,6 @@ import {
   Users,
   Calendar,
   CheckCircle2,
-  Clock,
-  AlertCircle,
   Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -75,6 +74,7 @@ interface BookingFormProps {
 }
 
 export function BookingForm({ trip, onClose }: BookingFormProps) {
+  const router = useRouter()
   const [step, setStep] = useState<'form' | 'processing' | 'success'>('form')
   const [isProcessing, setIsProcessing] = useState(false)
   const [currentBooking, setCurrentBooking] = useState<Booking | null>(null)
@@ -609,7 +609,10 @@ export function BookingForm({ trip, onClose }: BookingFormProps) {
             </p>
 
             <Button
-              onClick={onClose}
+              onClick={() => {
+                if (onClose) onClose()
+                router.push('/open-trip')
+              }}
               className="bg-primary hover:bg-primary-dark text-primary-foreground rounded-full px-8"
             >
               Selesai
