@@ -29,6 +29,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { updateBookingStatus } from './actions'
 
 interface BookingItem {
@@ -59,6 +69,32 @@ export default function BookingsClient({ initialBookings, isMockData }: Bookings
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null)
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [confirmData, setConfirmData] = useState<{
+    id: string
+    bookingCode: string
+    customerName: string
+    status: 'pending' | 'dp_paid' | 'paid' | 'cancelled'
+  } | null>(null)
+
+  const openConfirm = (
+    id: string,
+    bookingCode: string,
+    customerName: string,
+    status: 'pending' | 'dp_paid' | 'paid' | 'cancelled'
+  ) => {
+    setConfirmData({ id, bookingCode, customerName, status })
+    setConfirmOpen(true)
+  }
+
+  const handleConfirmAction = () => {
+    if (confirmData) {
+      handleStatusChange(confirmData.id, confirmData.status)
+      setConfirmOpen(false)
+      setConfirmData(null)
+    }
+  }
 
   const getWhatsAppLink = (number: string) => {
     let cleanNumber = number.replace(/\D/g, '')
@@ -448,7 +484,7 @@ export default function BookingsClient({ initialBookings, isMockData }: Bookings
                           <Button
                             size="sm"
                             variant="default"
-                            onClick={() => handleStatusChange(b.id, 'paid')}
+                            onClick={() => openConfirm(b.id, b.bookingCode, b.customerName, 'paid')}
                             disabled={isPending}
                             className="rounded-lg h-9 text-xs bg-success hover:bg-success/90 text-success-foreground flex items-center gap-1 cursor-pointer font-medium"
                           >
@@ -459,7 +495,7 @@ export default function BookingsClient({ initialBookings, isMockData }: Bookings
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => handleStatusChange(b.id, 'paid')}
+                            onClick={() => openConfirm(b.id, b.bookingCode, b.customerName, 'paid')}
                             disabled={b.status === 'paid' || isPending}
                             className="rounded-lg h-9 text-xs border-success/30 hover:bg-success/10 hover:text-success text-success-dark flex items-center gap-1 cursor-pointer"
                           >
@@ -470,7 +506,7 @@ export default function BookingsClient({ initialBookings, isMockData }: Bookings
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleStatusChange(b.id, 'cancelled')}
+                          onClick={() => openConfirm(b.id, b.bookingCode, b.customerName, 'cancelled')}
                           disabled={b.status === 'cancelled' || isPending}
                           className="rounded-lg h-9 text-xs border-destructive/30 hover:bg-destructive/10 hover:text-destructive text-destructive flex items-center gap-1 cursor-pointer"
                         >
@@ -498,6 +534,32 @@ export default function BookingsClient({ initialBookings, isMockData }: Bookings
           </div>
         )
       })()}
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {confirmData?.status === 'cancelled' ? 'Konfirmasi Pembatalan' : 'Konfirmasi Status Pembayaran'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {confirmData?.status === 'cancelled' ? (
+                <>Apakah Anda yakin ingin membatalkan pemesanan <strong>{confirmData?.bookingCode}</strong> ({confirmData?.customerName})? Tindakan ini tidak dapat dibatalkan.</>
+              ) : (
+                <>Apakah Anda yakin ingin mengubah status pemesanan <strong>{confirmData?.bookingCode}</strong> ({confirmData?.customerName}) menjadi <strong>Lunas</strong>?</>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setConfirmData(null)}>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmAction}
+              className={confirmData?.status === 'cancelled' ? 'bg-destructive hover:bg-destructive/90 text-destructive-foreground' : 'bg-success hover:bg-success/90 text-success-foreground'}
+            >
+              {confirmData?.status === 'cancelled' ? 'Ya, Batalkan' : 'Ya, Lunas'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

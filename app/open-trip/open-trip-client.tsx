@@ -107,25 +107,25 @@ export default function OpenTripClient({ trips }: OpenTripClientProps) {
       </section>
 
       {/* Filters */}
-      <section className="py-8 bg-background sticky top-20 z-30 border-b border-border">
+      <section className="py-8 bg-background/80 backdrop-blur-lg sticky top-20 z-30 border-b border-border">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-4 items-center">
             {/* Search */}
             <div className="relative w-full lg:w-auto lg:flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground text-primary" />
               <Input
                 type="text"
                 placeholder="Cari destinasi atau trip..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 rounded-full border-border"
+                className="pl-12 h-12 bg-background/90 rounded-full border-border"
               />
             </div>
 
             {/* Filter Selects */}
             <div className="flex flex-wrap gap-3 w-full lg:w-auto">
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full sm:w-44 data-[size=default]:h-12 h-12 rounded-full">
+                <SelectTrigger className="w-full bg-background/90 sm:w-44 data-[size=default]:h-12 h-12 rounded-full">
                   <Compass className="w-4 h-4 mr-2 text-primary" />
                   <SelectValue placeholder="Kategori" />
                 </SelectTrigger>
@@ -139,7 +139,7 @@ export default function OpenTripClient({ trips }: OpenTripClientProps) {
               </Select>
 
               <Select value={selectedDuration} onValueChange={setSelectedDuration}>
-                <SelectTrigger className="w-full sm:w-36 data-[size=default]:h-12 h-12 rounded-full">
+                <SelectTrigger className="w-full bg-background/90 sm:w-36 data-[size=default]:h-12 h-12 rounded-full">
                   <Clock className="w-4 h-4 mr-2 text-primary" />
                   <SelectValue placeholder="Durasi" />
                 </SelectTrigger>
@@ -153,7 +153,7 @@ export default function OpenTripClient({ trips }: OpenTripClientProps) {
               </Select>
 
               <Select value={selectedPriceRange} onValueChange={setSelectedPriceRange}>
-                <SelectTrigger className="w-full sm:w-40 data-[size=default]:h-12 h-12 rounded-full">
+                <SelectTrigger className="w-full bg-background/90 sm:w-40 data-[size=default]:h-12 h-12 rounded-full">
                   <Calendar className="w-4 h-4 mr-2 text-primary" />
                   <SelectValue placeholder="Harga" />
                 </SelectTrigger>
@@ -176,7 +176,7 @@ export default function OpenTripClient({ trips }: OpenTripClientProps) {
                 }}
                 className="h-12 rounded-full px-6"
               >
-                <Filter className="w-4 h-4 mr-2" />
+                <Filter className="w-4 h-4 mr-2 text-primary" />
                 Reset
               </Button>
             </div>
