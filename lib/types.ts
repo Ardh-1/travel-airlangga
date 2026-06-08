@@ -8,8 +8,6 @@ export interface Trip {
   originalPrice?: number
   image: string
   images?: string[]
-  availableSlots: number
-  totalSlots: number
   departureDates: string[]
   meetingPoint: string
   itinerary: ItineraryDay[]

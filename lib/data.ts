@@ -15,8 +15,6 @@ export const trips: Trip[] = [
       'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=800&q=80',
       'https://images.unsplash.com/photo-1541849546-216549ae216d?w=800&q=80',
     ],
-    availableSlots: 8,
-    totalSlots: 15,
     departureDates: ['2026-06-15', '2026-07-20', '2026-08-10'],
     meetingPoint: 'Bandara Soekarno-Hatta Terminal 3',
     itinerary: [
@@ -59,8 +57,6 @@ export const trips: Trip[] = [
       'https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=800&q=80',
       'https://images.unsplash.com/photo-1565967511849-76a60a516170?w=800&q=80',
     ],
-    availableSlots: 4,
-    totalSlots: 12,
     departureDates: ['2026-05-25', '2026-06-08', '2026-06-22', '2026-07-06'],
     meetingPoint: 'Stasiun Surabaya Gubeng',
     itinerary: [
@@ -108,8 +104,6 @@ export const trips: Trip[] = [
       'https://images.unsplash.com/photo-1584810359583-96fc3448beaa?w=800&q=80',
       'https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=800&q=80',
     ],
-    availableSlots: 6,
-    totalSlots: 10,
     departureDates: ['2026-06-01', '2026-06-15', '2026-07-01'],
     meetingPoint: 'Bandara Adi Soemarmo Solo',
     itinerary: [
@@ -151,8 +145,6 @@ export const trips: Trip[] = [
       'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80',
       'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=800&q=80',
     ],
-    availableSlots: 10,
-    totalSlots: 15,
     departureDates: ['2026-06-10', '2026-07-05', '2026-08-01'],
     meetingPoint: 'Bandara Ngurah Rai Bali',
     itinerary: [
@@ -184,8 +176,6 @@ export const trips: Trip[] = [
     duration: '6 Hari 5 Malam',
     price: 15000000,
     image: 'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?w=800&q=80',
-    availableSlots: 5,
-    totalSlots: 8,
     departureDates: ['2026-07-15', '2026-08-20'],
     meetingPoint: 'Bandara Domine Eduard Osok Sorong',
     itinerary: [

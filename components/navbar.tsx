@@ -43,7 +43,7 @@ export function Navbar() {
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
           ? 'bg-background/80 backdrop-blur-lg shadow-sm border-b border-border'
-          : 'bg-background/20'
+          : 'bg-background/30'
       )}
     >
       <nav className="container mx-auto px-4 h-20 flex items-center justify-between">

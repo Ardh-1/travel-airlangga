@@ -30,8 +30,6 @@ model Trip {
   price          Float
   originalPrice  Float?              @map("original_price")
   image          String
-  availableSlots Int                 @map("available_slots")
-  totalSlots     Int                 @map("total_slots")
   meetingPoint   String              @map("meeting_point")
   category       String // "domestic" | "international"
   featured       Boolean             @default(false)

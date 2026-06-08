@@ -33,8 +33,6 @@ export async function getTrips(): Promise<Trip[]> {
       originalPrice: t.originalPrice ?? undefined,
       image: t.image,
       images: [],
-      availableSlots: t.availableSlots,
-      totalSlots: t.totalSlots,
       departureDates: t.departureDates.map((d) => d.departureDate),
       meetingPoint: t.meetingPoint,
       itinerary: t.itineraries.map((it) => ({
@@ -91,8 +89,6 @@ export async function getTripBySlug(slug: string): Promise<Trip | null> {
       originalPrice: t.originalPrice ?? undefined,
       image: t.image,
       images: t.images.map((img) => img.imageUrl),
-      availableSlots: t.availableSlots,
-      totalSlots: t.totalSlots,
       departureDates: t.departureDates.map((d) => d.departureDate),
       meetingPoint: t.meetingPoint,
       itinerary: t.itineraries.map((it) => ({

@@ -102,7 +102,7 @@ export default auth((req) => {
   } else if (isApiRoute) {
     limit = 30 // Public API abuse protection
   } else if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE') {
-    limit = 30 // Strict protection for form submissions / data writes
+    limit = 15 // Strict protection for form submissions / data writes
   }
 
   // Trigger rate limit check
