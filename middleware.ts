@@ -96,13 +96,13 @@ export default auth((req) => {
   const windowMs = 60000 // 1 minute window
 
   if (isAuthPage || req.nextUrl.pathname.startsWith('/api/auth')) {
-    limit = 15 // Strict brute force protection for login & auth endpoints
+    limit = 20 // Strict brute force protection for login & auth endpoints
   } else if (isAdminPage || isAdminApi) {
-    limit = 30 // Admin panel and admin APIs abuse protection
+    limit = 90 // Admin panel and admin APIs abuse protection
   } else if (isApiRoute) {
-    limit = 30 // Public API abuse protection
+    limit = 90 // Public API abuse protection
   } else if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE') {
-    limit = 15 // Strict protection for form submissions / data writes
+    limit = 40 // Strict protection for form submissions / data writes
   }
 
   // Trigger rate limit check
