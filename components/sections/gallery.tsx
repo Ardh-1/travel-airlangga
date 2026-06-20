@@ -216,7 +216,7 @@ export function GallerySection({ initialItems }: GallerySectionProps) {
               onClick={(e) => e.stopPropagation()}
             >
               <Image
-                src={activeItem.image}
+                src={getOptimizedUnsplashUrl(activeItem.image, 1200, 80)}
                 alt={activeItem.location}
                 fill
                 className="object-cover"

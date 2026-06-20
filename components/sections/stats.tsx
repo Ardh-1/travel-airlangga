@@ -11,7 +11,7 @@ const stats = [
 
 export function StatsSection() {
   return (
-    <section className="relative -mt-20 z-10">
+    <section className="relative md:-mt-20 mt-10 z-10">
       <div className="container mx-auto px-4">
         <div className="bg-card rounded-3xl shadow-xl border border-border p-8 md:p-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">

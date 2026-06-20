@@ -25,10 +25,16 @@ import {
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { WhatsAppButton } from '@/components/whatsapp-button'
-import { BookingForm } from '@/components/booking-form'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import type { Trip } from '@/lib/types'
+import { getOptimizedUnsplashUrl } from '@/lib/utils'
+import dynamic from 'next/dynamic'
+
+const BookingForm = dynamic(() => import('@/components/booking-form').then((mod) => mod.BookingForm), {
+  loading: () => <div className="h-[400px] w-full animate-pulse bg-muted rounded-2xl" />,
+  ssr: false,
+})
 
 interface TripDetailPageClientProps {
   trip: Trip
@@ -149,7 +155,7 @@ export default function TripDetailPageClient({ trip }: TripDetailPageClientProps
                   className="relative aspect-video rounded-2xl overflow-hidden cursor-pointer group"
                 >
                   <Image
-                    src={images[selectedImage]}
+                    src={getOptimizedUnsplashUrl(images[selectedImage], 800, 75)}
                     alt={trip.title}
                     fill
                     className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
@@ -178,7 +184,7 @@ export default function TripDetailPageClient({ trip }: TripDetailPageClientProps
                         }`}
                       >
                         <Image
-                          src={img}
+                          src={getOptimizedUnsplashUrl(img, 150, 60)}
                           alt={`${trip.title} ${index + 1}`}
                           fill
                           className="object-cover"
@@ -451,7 +457,7 @@ export default function TripDetailPageClient({ trip }: TripDetailPageClientProps
             >
               <div className="relative w-full h-full">
                 <Image
-                  src={images[fullscreenImageIndex]}
+                  src={getOptimizedUnsplashUrl(images[fullscreenImageIndex], 1200, 80)}
                   alt={`${trip.title} Fullscreen`}
                   fill
                   className="object-contain"

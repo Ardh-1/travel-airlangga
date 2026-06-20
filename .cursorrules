@@ -1,0 +1,20 @@
+# AI Assistant Rules & Guidelines for travel-web-proto
+
+Please follow these guidelines strictly during development of this project:
+
+## 1. Shared Hosting Resource Constraints
+- **Resource Limits:** This project is deployed on shared hosting (cPanel). Always optimize to run on minimal CPU, RAM, and storage limits.
+- **Consider Shared Hosting Resources:** Untuk pengembangan kedepannya tolong selalu consider penggunaan resource shared hosting.
+- **Shared Hosting Resource Warning:** Kedepannya juga jika suatu fitur yang ingin saya tambahkan akan berpengaruh besar terhadap penggunaan resource shared hosting tolong peringatkan saya.
+- **Client-Side Heavy Operations:** Perform heavy operations (e.g. image conversion, compression, aspect ratio downscaling) on the **client-side (browser)** using HTML5 Canvas or Web APIs, rather than the server backend.
+- **Config Restrictions:** Keep `unoptimized: true` in `next.config.mjs` to bypass server-side image processing.
+
+## 2. Interactive Form Validation
+- **Field-Level Errors:** For any form in the admin panel, avoid generic validation messages. Validate fields individually and provide clear, specific toast alerts specifying which field is missing.
+- **Tab Switching & Focus:** If a missing field is located inside a hidden/inactive tab:
+  1. Trigger tab switching dynamically to make the tab active.
+  2. Use a short delay (`setTimeout` ~100ms) to ensure the tab is rendered in the DOM.
+  3. Scroll dynamically (`scrollIntoView`) and apply focus (`focus()`) to the missing input.
+
+## 3. Communication & Clarification
+- **Ask on Ambiguity:** Selalu tanyakan kembali kepada saya jika saya memberikan perintah yang masih abu-abu/ambigu.

@@ -22,10 +22,8 @@ interface AdminLayoutProps {
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const session = await auth()
 
-  // If the path is login, don't show the layout wrapper
-  // (Note: Next.js routing groups could do this, but checking session works perfectly)
   if (!session) {
-    return <>{children}</>
+    redirect('/admin/login')
   }
 
   const menuItems = [

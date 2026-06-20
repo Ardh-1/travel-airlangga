@@ -33,6 +33,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import type { Car } from '@/lib/types'
+import { getOptimizedUnsplashUrl } from '@/lib/utils'
 
 const WHATSAPP_NUMBER = '628111211143'
 
@@ -177,7 +178,7 @@ Mohon konfirmasi ketersediaan. Terima kasih!`
                 {/* Image */}
                 <div className="relative aspect-[3/4] flex-shrink-0 overflow-hidden">
                   <Image
-                    src={car.image}
+                    src={getOptimizedUnsplashUrl(car.image, 600, 75)}
                     alt={car.name}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"

@@ -30,52 +30,52 @@ const teamMembers = [
   {
     name: 'Abdul Ghani Aprizal',
     image: '/images/team-1.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/airlangga_travel/'
   },
   {
-    name: 'Budi Santoso',
+    name: 'Neneng Pratiwi Zahra',
     image: '/images/team-2.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/tiwi.npz/'
   },
   {
-    name: 'Rina Wijaya',
+    name: 'Amin Junaedi',
     image: '/images/team-3.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/amiwuff/'
   },
   {
-    name: 'Dika Pratama',
+    name: 'Fauzul Sambo',
     image: '/images/team-4.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/fauzulramadhan_/'
   },
   {
-    name: 'Sarah Amelia',
+    name: 'Afifah Nabila',
     image: '/images/team-5.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/afifahnblz/'
   },
   {
-    name: 'Ahmad Fauzi',
+    name: 'Ilyas Izzat',
     image: '/images/team-6.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/ilyasizzat04/'
   },
   {
-    name: 'Indah Permata',
+    name: 'Firman Fajar Saputra',
     image: '/images/team-7.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/kang.firmanfajars/'
   },
   {
-    name: 'Hendra Wijaya',
+    name: 'Mistar Sadega',
     image: '/images/team-8.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/mistarsadega/'
   },
   {
-    name: 'Yulia Citra',
+    name: 'Pimen',
     image: '/images/team-9.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/bearuang/'
   },
   {
-    name: 'Rizky Ramadhan',
+    name: 'Novi Yanti',
     image: '/images/team-10.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/novints_/'
   },
   {
     name: 'Dewi Lestari',

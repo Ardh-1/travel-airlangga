@@ -41,7 +41,7 @@ export function Navbar() {
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled
+        isOpen || isScrolled
           ? 'bg-background/80 backdrop-blur-lg shadow-sm border-b border-border'
           : 'bg-background/30'
       )}
@@ -112,7 +112,7 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-background border-b border-border overflow-hidden"
+            className="lg:hidden bg-transparent overflow-hidden"
           >
             <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
               {navLinks.map((link) => (
@@ -121,9 +121,9 @@ export function Navbar() {
                   href={link.href}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    'py-2 font-medium transition-colors',
+                    'py-2 px-3 rounded-lg font-medium transition-colors bg-transparent border-none outline-none block w-full',
                     pathname === link.href
-                      ? 'text-primary'
+                      ? 'text-primary font-semibold'
                       : 'text-muted-foreground hover:text-primary'
                   )}
                 >

@@ -28,6 +28,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 
+import { compressAndConvertToWebP } from '@/lib/utils'
+
 interface CarItem {
   id: string
   name: string
@@ -148,21 +150,23 @@ export default function CarsClient({ initialCars, isMockData }: CarsClientProps)
     })
   }
 
-  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    if (file.size > 1572864) {
-      toast.error('Ukuran file terlalu besar. Maksimal 1.5MB')
-      return
+    try {
+      const compressedBase64 = await compressAndConvertToWebP(file, 1200, 0.75)
+      setFormValues((prev) => ({ ...prev, image: compressedBase64 }))
+      toast.success('Gambar berhasil dikonversi ke WebP dan dikompresi!')
+    } catch (err) {
+      console.error(err)
+      toast.error('Gagal mengompresi gambar. Menggunakan file asli...')
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormValues((prev) => ({ ...prev, image: reader.result as string }))
+      }
+      reader.readAsDataURL(file)
     }
-
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      setFormValues((prev) => ({ ...prev, image: reader.result as string }))
-      toast.success('Gambar berhasil diproses secara lokal!')
-    }
-    reader.readAsDataURL(file)
   }
 
   const handleAddFeature = () => {
@@ -188,18 +192,38 @@ export default function CarsClient({ initialCars, isMockData }: CarsClientProps)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formValues.name || !formValues.type || !formValues.image) {
-      toast.error('Mohon isi semua field wajib yang diberi tanda bintang (*)')
+    if (!formValues.name) {
+      document.getElementById('name')?.focus()
+      document.getElementById('name')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      toast.error('Field wajib belum diisi: Nama Kendaraan')
       return
     }
 
-    if (formValues.pricePerDay <= 0) {
-      toast.error('Harga sewa harus lebih besar dari 0')
+    if (!formValues.type) {
+      document.getElementById('type')?.focus()
+      document.getElementById('type')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      toast.error('Field wajib belum diisi: Tipe / Kategori')
       return
     }
 
-    if (formValues.capacity <= 0) {
-      toast.error('Kapasitas penumpang harus minimal 1 orang')
+    if (!formValues.capacity || formValues.capacity <= 0) {
+      document.getElementById('capacity')?.focus()
+      document.getElementById('capacity')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      toast.error('Field wajib belum diisi: Kapasitas (Penumpang) harus minimal 1 orang')
+      return
+    }
+
+    if (!formValues.pricePerDay || formValues.pricePerDay <= 0) {
+      document.getElementById('pricePerDay')?.focus()
+      document.getElementById('pricePerDay')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      toast.error('Field wajib belum diisi: Harga Sewa / Hari harus lebih besar dari 0')
+      return
+    }
+
+    if (!formValues.image) {
+      document.getElementById('imageUrl')?.focus()
+      document.getElementById('imageUrl')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      toast.error('Field wajib belum diisi: Foto Kendaraan')
       return
     }
 
@@ -311,9 +335,52 @@ export default function CarsClient({ initialCars, isMockData }: CarsClientProps)
       {/* Cars Grid / List */}
       <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="text-center py-20">
-            <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-4" />
-            <p className="text-sm text-muted-foreground">Memuat data unit armada...</p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-secondary/40 text-muted-foreground text-xs uppercase font-medium">
+                <tr>
+                  <th className="px-6 py-4">Kendaraan</th>
+                  <th className="px-6 py-4">Tipe</th>
+                  <th className="px-6 py-4">Kapasitas</th>
+                  <th className="px-6 py-4">Fasilitas</th>
+                  <th className="px-6 py-4">Harga Sewa / Hari</th>
+                  <th className="px-6 py-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={idx} className="animate-pulse">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-12 rounded-lg bg-muted shrink-0" />
+                        <div className="h-4 bg-muted rounded w-32" />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-5 bg-muted rounded-full w-16" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-muted rounded w-24" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex gap-1">
+                        <div className="h-4 bg-muted rounded w-12" />
+                        <div className="h-4 bg-muted rounded w-16" />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-muted rounded w-20" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-center gap-2">
+                        <div className="h-9 w-9 bg-muted rounded-lg" />
+                        <div className="h-9 w-9 bg-muted rounded-lg" />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : filteredCars.length > 0 ? (
           <div className="overflow-x-auto">

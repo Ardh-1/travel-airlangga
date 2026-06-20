@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import type { GalleryItem } from '@/lib/types'
+import { compressAndConvertToWebP } from '@/lib/utils'
 
 interface GalleryClientProps {
   initialItems: GalleryItem[]
@@ -90,49 +91,38 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
   const [isBatchUploading, setIsBatchUploading] = useState(false)
   const [batchProgress, setBatchProgress] = useState(0)
 
-  const handleBatchFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBatchFileSelection = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files || files.length === 0) return
 
     const tempItems: typeof batchItems = []
     const errors: string[] = []
 
-    const promises = Array.from(files).map((file) => {
-      return new Promise<void>((resolve) => {
-        if (file.size > 1572864) {
-          errors.push(`${file.name}: Ukuran file terlalu besar. Maksimal 1.5MB`)
-          resolve()
-          return
-        }
-
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          tempItems.push({
-            id: crypto.randomUUID(),
-            image: reader.result as string,
-            location: batchSharedLocation || '',
-          })
-          resolve()
-        }
-        reader.onerror = () => {
-          errors.push(`${file.name}: Gagal membaca file`)
-          resolve()
-        }
-        reader.readAsDataURL(file)
-      })
+    const promises = Array.from(files).map(async (file) => {
+      try {
+        const compressedBase64 = await compressAndConvertToWebP(file, 1200, 0.75)
+        tempItems.push({
+          id: crypto.randomUUID(),
+          image: compressedBase64,
+          location: batchSharedLocation || '',
+        })
+      } catch (err) {
+        console.error(err)
+        errors.push(`${file.name}: Gagal mengompresi gambar`)
+      }
     })
 
-    Promise.all(promises).then(() => {
-      if (errors.length > 0) {
-        errors.forEach((err) => toast.error(err))
-      }
-      if (tempItems.length > 0) {
-        setBatchItems(tempItems)
-        setIsBatchOpen(true)
-        toast.success(`${tempItems.length} gambar siap diproses!`)
-      }
-      e.target.value = ''
-    })
+    await Promise.all(promises)
+
+    if (errors.length > 0) {
+      errors.forEach((err) => toast.error(err))
+    }
+    if (tempItems.length > 0) {
+      setBatchItems(tempItems)
+      setIsBatchOpen(true)
+      toast.success(`${tempItems.length} gambar siap diproses dan dikonversi ke WebP!`)
+    }
+    e.target.value = ''
   }
 
   const handleBatchSubmit = async (e: React.FormEvent) => {
@@ -359,8 +349,17 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formValues.location || !formValues.image) {
-      toast.error('Mohon isi semua field yang wajib (*)')
+    if (!formValues.location) {
+      document.getElementById('location')?.focus()
+      document.getElementById('location')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      toast.error('Field wajib belum diisi: Lokasi')
+      return
+    }
+
+    if (!formValues.image) {
+      document.getElementById('image')?.focus()
+      document.getElementById('image')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      toast.error('Field wajib belum diisi: Foto Galeri')
       return
     }
 
@@ -433,24 +432,26 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
     })
   }
 
-  const handleImageFileChange = (
+  const handleImageFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     onUploadSuccess: (base64: string) => void
   ) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    if (file.size > 1572864) {
-      toast.error('Ukuran file terlalu besar. Maksimal 1.5MB')
-      return
+    try {
+      const compressedBase64 = await compressAndConvertToWebP(file, 1200, 0.75)
+      onUploadSuccess(compressedBase64)
+      toast.success('Gambar berhasil dikonversi ke WebP dan dikompresi!')
+    } catch (err) {
+      console.error(err)
+      toast.error('Gagal mengompresi gambar. Menggunakan file asli...')
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        onUploadSuccess(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
-
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      onUploadSuccess(reader.result as string)
-      toast.success('Gambar berhasil diproses secara lokal!')
-    }
-    reader.readAsDataURL(file)
   }
 
   const filteredItems = items.filter(
@@ -513,9 +514,42 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
       {/* Grid List */}
       <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="text-center py-20 flex flex-col items-center justify-center">
-            <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
-            <p className="text-sm text-muted-foreground">Memuat data galeri foto...</p>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-border bg-secondary/30 text-xs font-semibold uppercase text-muted-foreground">
+                  <th className="p-4 w-28">Preview</th>
+                  <th className="p-4">Lokasi Foto</th>
+                  <th className="p-4">Tampilkan di Home</th>
+                  <th className="p-4">Tampilkan di About</th>
+                  <th className="p-4 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border text-sm">
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={idx} className="animate-pulse">
+                    <td className="p-4">
+                      <div className="w-20 h-28 rounded-lg bg-muted" />
+                    </td>
+                    <td className="p-4">
+                      <div className="h-4 bg-muted rounded w-40" />
+                    </td>
+                    <td className="p-4">
+                      <div className="h-9 w-24 bg-muted rounded-full" />
+                    </td>
+                    <td className="p-4">
+                      <div className="h-9 w-24 bg-muted rounded-full" />
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex justify-end gap-2">
+                        <div className="h-9 w-9 bg-muted rounded-lg" />
+                        <div className="h-9 w-9 bg-muted rounded-lg" />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : filteredItems.length > 0 ? (
           <div className="overflow-x-auto">

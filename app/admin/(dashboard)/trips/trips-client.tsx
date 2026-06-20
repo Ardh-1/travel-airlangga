@@ -38,6 +38,7 @@ import {
 } from '@/components/ui/dialog'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import type { Trip, ItineraryDay } from '@/lib/types'
+import { compressAndConvertToWebP } from '@/lib/utils'
 
 interface TripsClientProps {
   initialTrips: Trip[]
@@ -321,85 +322,136 @@ export default function TripsClient({ initialTrips, isMockData }: TripsClientPro
     })
   }
 
-  const handleImageFileChange = (
+  const handleImageFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     onUploadSuccess: (base64: string) => void
   ) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    if (file.size > 1572864) {
-      toast.error('Ukuran file terlalu besar. Maksimal 1.5MB')
-      return
+    try {
+      const compressedBase64 = await compressAndConvertToWebP(file, 1200, 0.75)
+      onUploadSuccess(compressedBase64)
+      toast.success('Gambar berhasil dikonversi ke WebP dan dikompresi!')
+    } catch (err) {
+      console.error(err)
+      toast.error('Gagal mengompresi gambar. Menggunakan file asli...')
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        onUploadSuccess(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
-
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      onUploadSuccess(reader.result as string)
-      toast.success('Gambar berhasil diproses secara lokal!')
-    }
-    reader.readAsDataURL(file)
   }
 
-  const handleMultipleImagesUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMultipleImagesUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files || files.length === 0) return
 
     const newImages: string[] = []
     const errors: string[] = []
     
-    const promises = Array.from(files).map((file) => {
-      return new Promise<void>((resolve) => {
-        if (file.size > 1572864) {
-          errors.push(`${file.name}: Ukuran file terlalu besar. Maksimal 1.5MB`)
-          resolve()
-          return
-        }
-
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          newImages.push(reader.result as string)
-          resolve()
-        }
-        reader.onerror = () => {
-          errors.push(`${file.name}: Gagal membaca file`)
-          resolve()
-        }
-        reader.readAsDataURL(file)
-      })
+    const promises = Array.from(files).map(async (file) => {
+      try {
+        const compressedBase64 = await compressAndConvertToWebP(file, 1200, 0.75)
+        newImages.push(compressedBase64)
+      } catch (err) {
+        console.error(err)
+        errors.push(`${file.name}: Gagal mengompresi gambar`)
+      }
     })
 
-    Promise.all(promises).then(() => {
-      if (errors.length > 0) {
-        errors.forEach((err) => toast.error(err))
-      }
-      if (newImages.length > 0) {
-        setFormValues((prev) => ({
-          ...prev,
-          images: [...prev.images, ...newImages],
-        }))
-        toast.success(`${newImages.length} gambar berhasil ditambahkan secara lokal!`)
-      }
-      e.target.value = ''
-    })
+    await Promise.all(promises)
+
+    if (errors.length > 0) {
+      errors.forEach((err) => toast.error(err))
+    }
+    if (newImages.length > 0) {
+      setFormValues((prev) => ({
+        ...prev,
+        images: [...prev.images, ...newImages],
+      }))
+      toast.success(`${newImages.length} gambar berhasil ditambahkan dan dikonversi ke WebP!`)
+    }
+    e.target.value = ''
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (
-      !formValues.title ||
-      !formValues.slug ||
-      !formValues.destination ||
-      !formValues.duration ||
-      !formValues.image ||
-      !formValues.meetingPoint
-    ) {
-      toast.error('Mohon isi semua field wajib yang diberi tanda bintang (*)')
+    if (!formValues.title) {
+      setActiveTab('info')
+      setTimeout(() => {
+        const el = document.getElementById('title')
+        el?.focus()
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 100)
+      toast.error('Field wajib belum diisi: Judul Paket Open Trip')
+      return
+    }
+
+    if (!formValues.slug) {
+      setActiveTab('info')
+      setTimeout(() => {
+        const el = document.getElementById('slug')
+        el?.focus()
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 100)
+      toast.error('Field wajib belum diisi: Slug (URL Path)')
+      return
+    }
+
+    if (!formValues.destination) {
+      setActiveTab('info')
+      setTimeout(() => {
+        const el = document.getElementById('destination')
+        el?.focus()
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 100)
+      toast.error('Field wajib belum diisi: Destinasi')
+      return
+    }
+
+    if (!formValues.duration) {
+      setActiveTab('info')
+      setTimeout(() => {
+        const el = document.getElementById('duration')
+        el?.focus()
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 100)
+      toast.error('Field wajib belum diisi: Durasi')
+      return
+    }
+
+    if (!formValues.meetingPoint) {
+      setActiveTab('dates')
+      setTimeout(() => {
+        const el = document.getElementById('meetingPoint')
+        el?.focus()
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 100)
+      toast.error('Field wajib belum diisi: Titik Kumpul (Meeting Point)')
+      return
+    }
+
+    if (!formValues.image) {
+      setActiveTab('media')
+      setTimeout(() => {
+        const el = document.getElementById('image')
+        el?.focus()
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 100)
+      toast.error('Field wajib belum diisi: Gambar Sampul Utama')
       return
     }
 
     if (formValues.price <= 0) {
+      setActiveTab('info')
+      setTimeout(() => {
+        const el = document.getElementById('price')
+        el?.focus()
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 100)
       toast.error('Harga paket harus lebih besar dari 0')
       return
     }
@@ -536,9 +588,52 @@ export default function TripsClient({ initialTrips, isMockData }: TripsClientPro
       {/* Trips Cards/Table */}
       <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="text-center py-20 flex flex-col items-center justify-center">
-            <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
-            <p className="text-sm text-muted-foreground">Memuat data unit trip...</p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-secondary/40 text-muted-foreground text-xs uppercase font-medium">
+                <tr>
+                  <th className="px-6 py-4">Trip</th>
+                  <th className="px-6 py-4">Destinasi</th>
+                  <th className="px-6 py-4">Durasi</th>
+                  <th className="px-6 py-4">Kategori</th>
+                  <th className="px-6 py-4">Harga / Pax</th>
+                  <th className="px-6 py-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={idx} className="animate-pulse">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-12 rounded-lg bg-muted shrink-0" />
+                        <div className="space-y-2 flex-1">
+                          <div className="h-4 bg-muted rounded w-32" />
+                          <div className="h-3 bg-muted rounded w-16" />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-muted rounded w-24" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-muted rounded w-16" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-5 bg-muted rounded-full w-20" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-muted rounded w-24" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-center gap-2">
+                        <div className="h-9 w-9 bg-muted rounded-lg" />
+                        <div className="h-9 w-9 bg-muted rounded-lg" />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : filteredTrips.length > 0 ? (
           <div className="overflow-x-auto">

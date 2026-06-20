@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Filter, Calendar, MapPin, Clock, Compass } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
@@ -41,6 +41,7 @@ export default function OpenTripClient({ trips }: OpenTripClientProps) {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedDuration, setSelectedDuration] = useState('Durasi')
   const [selectedPriceRange, setSelectedPriceRange] = useState('Harga')
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false)
   const [isLoading] = useState(false)
 
   const filteredTrips = useMemo(() => {
@@ -107,79 +108,121 @@ export default function OpenTripClient({ trips }: OpenTripClientProps) {
       </section>
 
       {/* Filters */}
-      <section className="py-8 bg-background/80 backdrop-blur-lg sticky top-20 z-30 border-b border-border">
+      <section className="py-6 bg-background/80 backdrop-blur-lg sticky top-20 z-30 border-b border-border">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
-            {/* Search */}
-            <div className="relative w-full lg:w-auto lg:flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground text-primary" />
+          <div className="flex flex-col gap-0">
+            {/* Search Input and Toggle Button */}
+            <div className="relative w-full">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Cari destinasi atau trip..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 bg-background/90 rounded-full border-border"
+                className="pl-12 pr-28 h-12 bg-background/90 rounded-full border-border w-full shadow-sm text-sm"
               />
-            </div>
-
-            {/* Filter Selects */}
-            <div className="flex flex-wrap gap-3 w-full lg:w-auto">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full bg-background/90 sm:w-44 data-[size=default]:h-12 h-12 rounded-full">
-                  <Compass className="w-4 h-4 mr-2 text-primary" />
-                  <SelectValue placeholder="Kategori" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={selectedDuration} onValueChange={setSelectedDuration}>
-                <SelectTrigger className="w-full bg-background/90 sm:w-36 data-[size=default]:h-12 h-12 rounded-full">
-                  <Clock className="w-4 h-4 mr-2 text-primary" />
-                  <SelectValue placeholder="Durasi" />
-                </SelectTrigger>
-                <SelectContent>
-                  {durations.map((dur) => (
-                    <SelectItem key={dur} value={dur}>
-                      {dur}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={selectedPriceRange} onValueChange={setSelectedPriceRange}>
-                <SelectTrigger className="w-full bg-background/90 sm:w-40 data-[size=default]:h-12 h-12 rounded-full">
-                  <Calendar className="w-4 h-4 mr-2 text-primary" />
-                  <SelectValue placeholder="Harga" />
-                </SelectTrigger>
-                <SelectContent>
-                  {priceRanges.map((range) => (
-                    <SelectItem key={range.label} value={range.label}>
-                      {range.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
               <Button
-                variant="outline"
-                onClick={() => {
-                  setSearchQuery('')
-                  setSelectedCategory('All')
-                  setSelectedDuration('All')
-                  setSelectedPriceRange('All')
-                }}
-                className="h-12 rounded-full px-6"
+                type="button"
+                variant={isFilterMenuOpen ? "default" : "outline"}
+                onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
+                className={`absolute right-1.5 top-1/2 -translate-y-1/2 h-9 rounded-full px-4 gap-2 text-xs md:text-sm font-medium transition-all duration-300 shadow-sm ${
+                  isFilterMenuOpen
+                    ? "bg-primary text-primary-foreground hover:bg-primary/95"
+                    : "hover:bg-accent hover:text-accent-foreground"
+                }`}
               >
-                <Filter className="w-4 h-4 mr-2 text-primary" />
-                Reset
+                <Filter className="w-3.5 h-3.5" />
+                <span>Filter</span>
               </Button>
             </div>
+
+            {/* Collapsible Filter Menu */}
+            <AnimatePresence>
+              {isFilterMenuOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                  animate={{ height: "auto", opacity: 1, marginTop: 16 }}
+                  exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="overflow-hidden w-full"
+                >
+                  <div className="bg-card/95 border border-border rounded-2xl p-4 md:p-6 shadow-md backdrop-blur-md">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
+                      {/* Category */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Kategori</label>
+                        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                          <SelectTrigger className="w-full bg-background/50 h-11 rounded-xl">
+                            <Compass className="w-4 h-4 mr-2 text-primary" />
+                            <SelectValue placeholder="Kategori" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((cat) => (
+                              <SelectItem key={cat.value} value={cat.value}>
+                                {cat.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Duration */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Durasi</label>
+                        <Select value={selectedDuration} onValueChange={setSelectedDuration}>
+                          <SelectTrigger className="w-full bg-background/50 h-11 rounded-xl">
+                            <Clock className="w-4 h-4 mr-2 text-primary" />
+                            <SelectValue placeholder="Durasi" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {durations.map((dur) => (
+                              <SelectItem key={dur} value={dur}>
+                                {dur}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Price Range */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Harga</label>
+                        <Select value={selectedPriceRange} onValueChange={setSelectedPriceRange}>
+                          <SelectTrigger className="w-full bg-background/50 h-11 rounded-xl">
+                            <Calendar className="w-4 h-4 mr-2 text-primary" />
+                            <SelectValue placeholder="Harga" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {priceRanges.map((range) => (
+                              <SelectItem key={range.label} value={range.label}>
+                                {range.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Reset Button */}
+                      <div className="w-full">
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setSearchQuery("")
+                            setSelectedCategory("All")
+                            setSelectedDuration("Durasi")
+                            setSelectedPriceRange("Harga")
+                          }}
+                          className="w-full h-11 rounded-xl border-dashed hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all duration-300 gap-2"
+                        >
+                          <Filter className="w-4 h-4" />
+                          Reset Filter
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </section>
