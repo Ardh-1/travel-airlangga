@@ -34,7 +34,7 @@ export async function sendBookingConfirmationEmail(booking: Booking) {
     }
   }
 
-  const trackLink = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/track-order?code=${booking.bookingCode}`
+  const trackLink = `${process.env.NEXTAUTH_URL || 'https://travel.ardh-1.my.id'}/track-order?code=${booking.bookingCode}`
 
   const isDpPaid = booking.status === 'dp_paid'
   const depositAmount = booking.totalPrice * (depositPercentage / 100)
@@ -304,7 +304,7 @@ Detail Booking:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Airlangga Travel <onboarding@resend.dev>', // resend testing domain
+        from: 'Airlangga Travel <mail@travel.ardh-1.my.id>',
         to: [booking.email],
         subject: `[Airlangga Travel] Konfirmasi Booking ${booking.bookingCode}`,
         html: emailHtml,
