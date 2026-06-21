@@ -23,12 +23,20 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'Airlangga Travel - Jelajahi Dunia Bersama Kami',
+  title: {
+    default: 'Airlangga Travel',
+    template: '%s - Airlangga Travel',
+  },
   description: 'Airlangga Travel menyediakan layanan Open Trip, Private Trip, dan rental mobil premium. Destinasi terbaik dengan harga terjangkau.',
   keywords: ['travel', 'open trip', 'private trip', 'wisata', 'liburan', 'Bromo', 'Yogyakarta', 'East Europe'],
   authors: [{ name: 'Airlangga Travel' }],
+  icons: {
+    icon: '/images/tabs-logo.webp',
+    shortcut: '/images/tabs-logo.webp',
+    apple: '/images/tabs-logo.webp',
+  },
   openGraph: {
-    title: 'Airlangga Travel - Jelajahi Dunia Bersama Kami',
+    title: 'Airlangga Travel',
     description: 'Airlangga Travel menyediakan layanan Open Trip, Private Trip, dan rental mobil premium.',
     type: 'website',
     locale: 'id_ID',

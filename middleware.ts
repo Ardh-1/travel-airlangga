@@ -91,51 +91,59 @@ export default auth((req) => {
   // Periodically clean up cache to prevent memory exhaustion
   cleanExpiredRecords()
 
-  // Rate limit thresholds based on request type
-  let limit = 100 // Default limit for general page views
-  const windowMs = 60000 // 1 minute window
+  const isLoginSubmit = req.method === 'POST' && (
+    req.nextUrl.pathname.includes('/api/auth/callback/credentials') ||
+    req.nextUrl.pathname.includes('/api/auth/signin/credentials') ||
+    req.nextUrl.pathname.startsWith('/admin/login')
+  )
 
-  if (isAuthPage || req.nextUrl.pathname.startsWith('/api/auth')) {
-    limit = 20 // Strict brute force protection for login & auth endpoints
-  } else if (isAdminPage || isAdminApi) {
-    limit = 90 // Admin panel and admin APIs abuse protection
-  } else if (isApiRoute) {
-    limit = 90 // Public API abuse protection
-  } else if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE') {
-    limit = 40 // Strict protection for form submissions / data writes
-  }
+  const shouldRateLimit = isLoginSubmit || (!isAdminPage && !isAdminApi)
 
-  // Trigger rate limit check
-  const { limited, blockedUntil } = checkRateLimit(ip, limit, windowMs)
-  if (limited) {
-    const retryAfter = blockedUntil ? Math.ceil((blockedUntil - Date.now()) / 1000) : 60
-    const retryAfterStr = String(retryAfter > 0 ? retryAfter : 60)
+  if (shouldRateLimit) {
+    // Rate limit thresholds based on request type
+    let limit = 100 // Default limit for general page views
+    const windowMs = 60000 // 1 minute window
 
-    if (isApiRoute) {
-      const response = NextResponse.json(
-        { error: `Too many requests. Please try again after ${retryAfterStr} seconds.` },
-        { status: 429 }
-      )
-      response.headers.set('Retry-After', retryAfterStr)
-      if (isAllowedOrigin) {
-        response.headers.set('Access-Control-Allow-Origin', origin)
-        response.headers.set('Access-Control-Allow-Credentials', 'true')
-      }
-      return response
+    if (isLoginSubmit) {
+      limit = 20 // Strict brute force protection for login attempts
+    } else if (isApiRoute) {
+      limit = 90 // Public API abuse protection
+    } else if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE') {
+      limit = 40 // Strict protection for public form submissions / data writes
     }
 
-    return new NextResponse(
-      `<html><head><title>Too Many Requests</title><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/></head><body style="font-family:sans-serif; text-align:center; padding: 50px; background-color: #f9fafb;"><div style="max-width: 500px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; border: 1px border #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);"><h1 style="color:#e11d48; margin-bottom: 12px; font-size: 24px;">Terlalu Banyak Permintaan (429)</h1><p style="color:#4b5563; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">Sistem mendeteksi aktivitas mencurigakan atau rentetan request berlebih dari alamat IP Anda. Silakan tunggu sekitar ${retryAfterStr} detik lalu muat ulang halaman.</p><div style="font-size: 12px; color: #9ca3af;">Airlangga Travel Shield</div></div></body></html>`,
-      {
-        status: 429,
-        headers: {
-          'Content-Type': 'text/html',
-          'Retry-After': retryAfterStr,
-          'X-Frame-Options': 'DENY',
-          'X-Content-Type-Options': 'nosniff',
-        },
+    // Trigger rate limit check
+    const { limited, blockedUntil } = checkRateLimit(ip, limit, windowMs)
+    if (limited) {
+      const retryAfter = blockedUntil ? Math.ceil((blockedUntil - Date.now()) / 1000) : 60
+      const retryAfterStr = String(retryAfter > 0 ? retryAfter : 60)
+
+      if (isApiRoute) {
+        const response = NextResponse.json(
+          { error: `Too many requests. Please try again after ${retryAfterStr} seconds.` },
+          { status: 429 }
+        )
+        response.headers.set('Retry-After', retryAfterStr)
+        if (isAllowedOrigin) {
+          response.headers.set('Access-Control-Allow-Origin', origin)
+          response.headers.set('Access-Control-Allow-Credentials', 'true')
+        }
+        return response
       }
-    )
+
+      return new NextResponse(
+        `<html><head><title>Too Many Requests</title><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/></head><body style="font-family:sans-serif; text-align:center; padding: 50px; background-color: #f9fafb;"><div style="max-width: 500px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; border: 1px border #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);"><h1 style="color:#e11d48; margin-bottom: 12px; font-size: 24px;">Terlalu Banyak Permintaan (429)</h1><p style="color:#4b5563; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">Sistem mendeteksi aktivitas mencurigakan atau rentetan request berlebih dari alamat IP Anda. Silakan tunggu sekitar ${retryAfterStr} detik lalu muat ulang halaman.</p><div style="font-size: 12px; color: #9ca3af;">Airlangga Travel Shield</div></div></body></html>`,
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'text/html',
+            'Retry-After': retryAfterStr,
+            'X-Frame-Options': 'DENY',
+            'X-Content-Type-Options': 'nosniff',
+          },
+        }
+      )
+    }
   }
 
   // Handle preflight CORS requests (OPTIONS)

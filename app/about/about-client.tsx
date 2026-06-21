@@ -78,24 +78,24 @@ const teamMembers = [
     instagram: 'https://www.instagram.com/novints_/'
   },
   {
-    name: 'Dewi Lestari',
+    name: 'Arya',
     image: '/images/team-11.webp',
     instagram: '#'
   },
   {
-    name: 'Bagus Saputra',
+    name: 'Kevin Kusumawinata',
     image: '/images/team-12.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/keevinkw_/'
   },
   {
-    name: 'Fitriani Ningsih',
+    name: 'Rangga Fadli',
     image: '/images/team-13.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/rangga_fadli/'
   },
   {
-    name: 'Aditya Pratama',
+    name: 'Hartono',
     image: '/images/team-14.webp',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/hartono0899/'
   }
 ]
 

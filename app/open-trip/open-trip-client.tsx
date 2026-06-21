@@ -108,7 +108,7 @@ export default function OpenTripClient({ trips }: OpenTripClientProps) {
       </section>
 
       {/* Filters */}
-      <section className="py-6 bg-background/80 backdrop-blur-lg sticky top-20 z-30 border-b border-border">
+      <section className="py-3 bg-background/80 backdrop-blur-lg sticky top-20 z-30 border-b border-border">
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-0">
             {/* Search Input and Toggle Button */}
@@ -125,11 +125,10 @@ export default function OpenTripClient({ trips }: OpenTripClientProps) {
                 type="button"
                 variant={isFilterMenuOpen ? "default" : "outline"}
                 onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
-                className={`absolute right-1.5 top-1/2 -translate-y-1/2 h-9 rounded-full px-4 gap-2 text-xs md:text-sm font-medium transition-all duration-300 shadow-sm ${
-                  isFilterMenuOpen
-                    ? "bg-primary text-primary-foreground hover:bg-primary/95"
-                    : "hover:bg-accent hover:text-accent-foreground"
-                }`}
+                className={`absolute right-1.5 top-1/2 -translate-y-1/2 h-9 rounded-full px-4 gap-2 text-xs md:text-sm font-medium transition-all duration-300 shadow-sm ${isFilterMenuOpen
+                  ? "bg-primary text-primary-foreground hover:bg-primary/95"
+                  : "hover:bg-accent hover:text-accent-foreground"
+                  }`}
               >
                 <Filter className="w-3.5 h-3.5" />
                 <span>Filter</span>

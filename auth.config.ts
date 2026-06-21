@@ -2,6 +2,18 @@ import type { NextAuthConfig } from 'next-auth'
 
 export const authConfig = {
   providers: [], // Credentials provider added in auth.ts
+  trustHost: true,
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
