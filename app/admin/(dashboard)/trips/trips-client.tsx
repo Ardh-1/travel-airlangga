@@ -38,7 +38,7 @@ import {
 } from '@/components/ui/dialog'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import type { Trip, ItineraryDay } from '@/lib/types'
-import { compressAndConvertToWebP } from '@/lib/utils'
+import { compressAndConvertToWebP, uploadImageToSupabase } from '@/lib/utils'
 
 interface TripsClientProps {
   initialTrips: Trip[]
@@ -324,21 +324,24 @@ export default function TripsClient({ initialTrips, isMockData }: TripsClientPro
 
   const handleImageFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    onUploadSuccess: (base64: string) => void
+    onUploadSuccess: (url: string) => void
   ) => {
     const file = e.target.files?.[0]
     if (!file) return
 
+    const toastId = toast.loading('Mengompresi dan mengunggah gambar...')
     try {
       const compressedBase64 = await compressAndConvertToWebP(file, 1200, 0.75)
-      onUploadSuccess(compressedBase64)
-      toast.success('Gambar berhasil dikonversi ke WebP dan dikompresi!')
+      const finalUrl = await uploadImageToSupabase(compressedBase64, 'trips')
+      onUploadSuccess(finalUrl)
+      toast.success('Gambar berhasil diproses!', { id: toastId })
     } catch (err) {
       console.error(err)
-      toast.error('Gagal mengompresi gambar. Menggunakan file asli...')
+      toast.error('Gagal memproses gambar. Menggunakan file asli...', { id: toastId })
       const reader = new FileReader()
-      reader.onloadend = () => {
-        onUploadSuccess(reader.result as string)
+      reader.onloadend = async () => {
+        const finalUrl = await uploadImageToSupabase(reader.result as string, 'trips')
+        onUploadSuccess(finalUrl)
       }
       reader.readAsDataURL(file)
     }
@@ -351,13 +354,16 @@ export default function TripsClient({ initialTrips, isMockData }: TripsClientPro
     const newImages: string[] = []
     const errors: string[] = []
     
+    const toastId = toast.loading(`Mengunggah ${files.length} gambar ke galeri paket...`)
+    
     const promises = Array.from(files).map(async (file) => {
       try {
         const compressedBase64 = await compressAndConvertToWebP(file, 1200, 0.75)
-        newImages.push(compressedBase64)
+        const finalUrl = await uploadImageToSupabase(compressedBase64, 'trips')
+        newImages.push(finalUrl)
       } catch (err) {
         console.error(err)
-        errors.push(`${file.name}: Gagal mengompresi gambar`)
+        errors.push(`${file.name}: Gagal memproses gambar`)
       }
     })
 
@@ -371,7 +377,9 @@ export default function TripsClient({ initialTrips, isMockData }: TripsClientPro
         ...prev,
         images: [...prev.images, ...newImages],
       }))
-      toast.success(`${newImages.length} gambar berhasil ditambahkan dan dikonversi ke WebP!`)
+      toast.success(`${newImages.length} gambar berhasil diunggah!`, { id: toastId })
+    } else {
+      toast.dismiss(toastId)
     }
     e.target.value = ''
   }

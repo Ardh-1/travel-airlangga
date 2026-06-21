@@ -211,37 +211,37 @@ export async function sendBookingConfirmationEmail(booking: Booking) {
             <div class="booking-code">${booking.bookingCode}</div>
             
             <div class="info-row">
-              <span class="info-label">Paket Perjalanan</span>
+              <span class="info-label">Paket Perjalanan </span>
               <span class="info-value">${booking.tripTitle}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Tanggal Keberangkatan</span>
+              <span class="info-label">Tanggal Keberangkatan </span>
               <span class="info-value">${booking.departureDate}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Jumlah Peserta</span>
+              <span class="info-label">Jumlah Peserta </span>
               <span class="info-value">${booking.participants} Orang</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Email</span>
+              <span class="info-label">Email </span>
               <span class="info-value">${booking.email}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">No. WhatsApp</span>
+              <span class="info-label">No. WhatsApp </span>
               <span class="info-value">${booking.whatsapp}</span>
             </div>
 
             ${isDpPaid ? `
               <div class="price-row">
-                <span class="price-label">Total Harga Paket</span>
+                <span class="price-label">Total Harga Paket </span>
                 <span class="price-value">${formatPrice(booking.totalPrice)}</span>
               </div>
               <div class="price-row extra" style="color: #10B981;">
-                <span class="price-label" style="font-weight: normal;">Uang Muka Terbayar (DP ${depositPercentage}%)</span>
+                <span class="price-label" style="font-weight: normal;">Uang Muka Terbayar (DP ${depositPercentage}%) </span>
                 <span class="price-value" style="color: #10B981; font-size: 16px;">${formatPrice(depositAmount)}</span>
               </div>
               <div class="price-row extra" style="color: #D4A017; border-top: 1px dashed #E5E5E5; padding-top: 10px; margin-top: 5px;">
-                <span class="price-label">Sisa Pelunasan</span>
+                <span class="price-label">Sisa Pelunasan </span>
                 <span class="price-value" style="color: #D4A017;">${formatPrice(remainingAmount)}</span>
               </div>
             ` : `

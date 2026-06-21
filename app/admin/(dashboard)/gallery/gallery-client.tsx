@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import type { GalleryItem } from '@/lib/types'
-import { compressAndConvertToWebP } from '@/lib/utils'
+import { compressAndConvertToWebP, uploadImageToSupabase } from '@/lib/utils'
 
 interface GalleryClientProps {
   initialItems: GalleryItem[]
@@ -98,17 +98,20 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
     const tempItems: typeof batchItems = []
     const errors: string[] = []
 
+    const toastId = toast.loading(`Mengompresi dan mengunggah ${files.length} gambar ke galeri...`)
+
     const promises = Array.from(files).map(async (file) => {
       try {
         const compressedBase64 = await compressAndConvertToWebP(file, 1200, 0.75)
+        const finalUrl = await uploadImageToSupabase(compressedBase64, 'gallery')
         tempItems.push({
           id: crypto.randomUUID(),
-          image: compressedBase64,
+          image: finalUrl,
           location: batchSharedLocation || '',
         })
       } catch (err) {
         console.error(err)
-        errors.push(`${file.name}: Gagal mengompresi gambar`)
+        errors.push(`${file.name}: Gagal memproses gambar`)
       }
     })
 
@@ -120,7 +123,9 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
     if (tempItems.length > 0) {
       setBatchItems(tempItems)
       setIsBatchOpen(true)
-      toast.success(`${tempItems.length} gambar siap diproses dan dikonversi ke WebP!`)
+      toast.success(`${tempItems.length} gambar siap diproses!`, { id: toastId })
+    } else {
+      toast.dismiss(toastId)
     }
     e.target.value = ''
   }
@@ -434,21 +439,24 @@ export default function GalleryClient({ initialItems, isMockData }: GalleryClien
 
   const handleImageFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    onUploadSuccess: (base64: string) => void
+    onUploadSuccess: (url: string) => void
   ) => {
     const file = e.target.files?.[0]
     if (!file) return
 
+    const toastId = toast.loading('Mengompresi dan mengunggah gambar...')
     try {
       const compressedBase64 = await compressAndConvertToWebP(file, 1200, 0.75)
-      onUploadSuccess(compressedBase64)
-      toast.success('Gambar berhasil dikonversi ke WebP dan dikompresi!')
+      const finalUrl = await uploadImageToSupabase(compressedBase64, 'gallery')
+      onUploadSuccess(finalUrl)
+      toast.success('Gambar berhasil diproses!', { id: toastId })
     } catch (err) {
       console.error(err)
-      toast.error('Gagal mengompresi gambar. Menggunakan file asli...')
+      toast.error('Gagal memproses gambar. Menggunakan file asli...', { id: toastId })
       const reader = new FileReader()
-      reader.onloadend = () => {
-        onUploadSuccess(reader.result as string)
+      reader.onloadend = async () => {
+        const finalUrl = await uploadImageToSupabase(reader.result as string, 'gallery')
+        onUploadSuccess(finalUrl)
       }
       reader.readAsDataURL(file)
     }

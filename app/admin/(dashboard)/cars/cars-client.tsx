@@ -28,7 +28,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 
-import { compressAndConvertToWebP } from '@/lib/utils'
+import { compressAndConvertToWebP, uploadImageToSupabase } from '@/lib/utils'
 
 interface CarItem {
   id: string
@@ -154,16 +154,19 @@ export default function CarsClient({ initialCars, isMockData }: CarsClientProps)
     const file = e.target.files?.[0]
     if (!file) return
 
+    const toastId = toast.loading('Mengompresi dan mengunggah gambar...')
     try {
       const compressedBase64 = await compressAndConvertToWebP(file, 1200, 0.75)
-      setFormValues((prev) => ({ ...prev, image: compressedBase64 }))
-      toast.success('Gambar berhasil dikonversi ke WebP dan dikompresi!')
+      const finalUrl = await uploadImageToSupabase(compressedBase64, 'cars')
+      setFormValues((prev) => ({ ...prev, image: finalUrl }))
+      toast.success('Gambar berhasil diproses!', { id: toastId })
     } catch (err) {
       console.error(err)
-      toast.error('Gagal mengompresi gambar. Menggunakan file asli...')
+      toast.error('Gagal memproses gambar. Menggunakan file asli...', { id: toastId })
       const reader = new FileReader()
-      reader.onloadend = () => {
-        setFormValues((prev) => ({ ...prev, image: reader.result as string }))
+      reader.onloadend = async () => {
+        const finalUrl = await uploadImageToSupabase(reader.result as string, 'cars')
+        setFormValues((prev) => ({ ...prev, image: finalUrl }))
       }
       reader.readAsDataURL(file)
     }

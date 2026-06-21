@@ -96,3 +96,28 @@ export function compressAndConvertToWebP(
   })
 }
 
+export async function uploadImageToSupabase(base64Str: string, folder: string = 'general'): Promise<string> {
+  try {
+    const res = await fetch('/api/admin/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: base64Str, folder })
+    })
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
+    }
+    
+    const data = await res.json()
+    if (data.success) {
+      return data.url
+    }
+    throw new Error(data.error || 'Gagal mengunggah gambar')
+  } catch (error) {
+    console.error('Error uploading image to Supabase storage:', error)
+    // Fallback to base64 so it can still be saved directly in the DB
+    return base64Str
+  }
+}
+
+
